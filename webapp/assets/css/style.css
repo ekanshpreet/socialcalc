@@ -1,0 +1,42 @@
+/**
+ * SocialCalc/webapp/assets/style.css
+ * Holds css classes and ids describing styling of various HTML elements
+ */
+html {background: #E6E6E6;font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;}
+img {border:none;}
+a, a:link, a:visited {text-decoration: none;color: #416A93;outline: none; border:none;}
+a:hover {text-decoration : none;color : red;}
+
+/* Rounded Rectangles */
+.bl {background: url(../img/bl.gif) 0 100% no-repeat white;}
+.br {background: url(../img/br.gif) 100% 100% no-repeat} 
+.tl {background: url(../img/tl.gif) 0 0 no-repeat} 
+.tr {background: url(../img/tr.gif) 100% 0 no-repeat;} 
+
+/* Text alignments */
+.text-right{text-align:right;}
+.text-center{text-align:center;}
+
+/* Text colors */
+.gray {color:#7b7b7b;}
+
+/* Text sizes */
+.small{font-size:0.75em;}
+.bigger {font-size:.9em;}
+
+/* Calendar */
+#events_table h3 {font-size:.8em;}
+#events_table p {font-size:.8em;}
+.calendar-head {background-color:black; color:white}
+.calendar-title {font-weight:bold; text-align:center;}
+.date {font-family: Verdana; padding-left:7px;}
+.weekend{color:#7e7e7e;}
+.normal-date {color: #000000;}
+.today-event {}
+.today-event button {color: #000000; background-color: #CACACA;}
+.today {color: #000000; background-color: #CACACA;}
+.selected-date {color: #FFFFFF; background-color: #C00000;}
+.has-event button {color: #000000; background-color: #C6D1DC;}
+#add-event {font-size:.7em; font-family: Verdana;}
+.hint {color:#7e7e7e}
+#show-event-form button {font-size:.7em; color: black; background-color:}
