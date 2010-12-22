@@ -34,7 +34,15 @@ abstract class SocialCalcController {
      * Constructor to initialize the Main Controller
      */
     public function __construct() {
+        $config = Config::getInstance();
         $this->smarty = new SmartySocialCalc();
+        $this->app_session = new Session();
+        if ($this->isLoggedIn()) {
+            $this->addToView('logged_in_user', $this->getLoggedInUser());
+        }
+        if ($this->isAdmin()) {
+            $this->addToView('user_is_admin', true);
+        }
     }
     
     /**
@@ -97,5 +105,50 @@ abstract class SocialCalcController {
      */
     protected function disableCaching() {
         $this->smarty->disableCaching();
+    }
+    
+    /**
+     * Add error message to view
+     * @param str $msg
+     */
+    public function addErrorMessage($msg) {
+        $this->disableCaching();
+        $this->addToView('errormsg', $msg );
+    }
+
+    /**
+     * Add success message to view
+     * @param str $msg
+     */
+    public function addSuccessMessage($msg) {
+        $this->disableCaching();
+        $this->addToView('successmsg', $msg );
+    }
+    
+    /**
+     * Returns whether or not SocialCalc user is logged in
+     *
+     * @return bool whether or not user is logged in
+     */
+    protected function isLoggedIn() {
+        return Session::isLoggedIn();
+    }
+
+    /**
+     * Returns whether or not a logged-in SocialCalc user is an admin
+     *
+     * @return bool whether or not logged-in user is an admin
+     */
+    protected function isAdmin() {
+        return Session::isAdmin();
+    }
+
+    /**
+     * Return email address of logged-in user
+     *
+     * @return str email
+     */
+    protected function getLoggedInUser() {
+        return Session::getLoggedInUser();
     }
 }

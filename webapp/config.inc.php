@@ -10,11 +10,11 @@
 // Application title
 $SOCIALCALC_CFG['app_title']                 = 'SocialCalc';
 
-// Public path of thinkup's /webapp/ folder on your web server.
-// For example, if the /webapp/ folder is located at http://yourdomain/thinkup/, set to '/thinkup/'.
+// Public path of SocialCalc's /webapp/ folder on your web server.
+// For example, if the /webapp/ folder is located at http://yourdomain/socialcalc/, set to '/socialcalc/'.
 $SOCIALCALC_CFG['site_root_path']            = '/socialcalc/';
 
-// Full server path to /thinkup/ folder.
+// Full server path to /socialcalc/ folder.
 $SOCIALCALC_CFG['source_root_path']          = 'http://localhost/socialcalc/';
 
 // Toggle Smarty caching. true: Smarty caching on, false: Smarty caching off

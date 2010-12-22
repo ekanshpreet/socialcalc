@@ -14,8 +14,8 @@ a:hover {text-decoration : none;color : red;}
 .tr {background: url(../img/tr.gif) 100% 0 no-repeat;} 
 
 /* Text alignments */
-.text-right{text-align:right;}
-.text-center{text-align:center;}
+.text_right{text-align:right;}
+.text_center{text-align:center;}
 
 /* Text colors */
 .gray {color:#7b7b7b;}
@@ -25,18 +25,37 @@ a:hover {text-decoration : none;color : red;}
 .bigger {font-size:.9em;}
 
 /* Calendar */
-#events_table h3 {font-size:.8em;}
-#events_table p {font-size:.8em;}
-.calendar-head {background-color:black; color:white}
-.calendar-title {font-weight:bold; text-align:center;}
+#eventsTable h3 {font-size:.8em;}
+#eventsTable p {font-size:.8em;}
+#addEvent {font-size:.7em; font-family: Verdana;}
+#showEventForm button {font-size:.7em; color: black; background-color:}
+.calendar_head {background-color:#000000; color:white}
+.calendar_title {font-weight:bold; text-align:center;}
 .date {font-family: Verdana; padding-left:7px;}
 .weekend{color:#7e7e7e;}
-.normal-date {color: #000000;}
-.today-event {}
-.today-event button {color: #000000; background-color: #CACACA;}
+.normal_date {color: #000000;}
+.today_event {}
+.today_event button {color: #000000; background-color: #CACACA;}
 .today {color: #000000; background-color: #CACACA;}
-.selected-date {color: #FFFFFF; background-color: #C00000;}
-.has-event button {color: #000000; background-color: #C6D1DC;}
-#add-event {font-size:.7em; font-family: Verdana;}
+.selected_date {color: #FFFFFF; background-color: #C00000;}
+.has_event button {color: #000000; background-color: #C6D1DC;}
 .hint {color:#7e7e7e}
-#show-event-form button {font-size:.7em; color: black; background-color:}
+
+.successmsg {
+  background-color: #BFDFBF;
+  margin: 10px 0px;
+  padding: 10px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+.errormsg {
+  background-color: #ff9494;
+  margin: 10px 0px;
+  padding: 10px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+.ui_state_highlight p a {color:#416A93;}
+.ui_state_error p a {color:#416A93;}

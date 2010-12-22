@@ -1,15 +1,15 @@
 <?php
 /**
  *
- * SocialCalc/webapp/_lib/model/class.Calendar.php
- * Calendar Object
+ * SocialCalc/webapp/_lib/model/class.Event.php
+ * Event Object
  * 
  */
 
 class Event {
     var $id;
     /**
-     * @var str target_class
+     * @var str title
      */
     var $title;
     /**

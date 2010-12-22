@@ -16,7 +16,7 @@
 </head>
 <body>
     <div id="main">
-        <div id="header-bar">
+        <div id="headerBar">
             <div class="left">
                 <a href="{$site_root_path}">
                     <img src="{$site_root_path}assets/img/sc.png">

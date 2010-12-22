@@ -1,4 +1,4 @@
-<div id="calendar">
+<div id="calendar" class="left-panel">
     {$month_now=$smarty.now|date_format:'%m'}
     {$year_now=$smarty.now|date_format:'%Y'}
     {$counter=0}
@@ -7,7 +7,7 @@
             <td width='35' colspan='1'>
                 <input type='button' id="previous_month" value='<'>
             </td> 
-            <td width='140' colspan='5' class="calendar-title"> 
+            <td width='140' colspan='5' class="calendar_title"> 
                 {$month_name}, {$year}
             </td> 
             <td width='35' colspan='1' align='right'>
@@ -17,13 +17,13 @@
     </table>
     <table width='210' border='0' cellspacing='0' cellpadding='0'> 
         <tr> 
-            <td class='date calendar-head' width='30'>S</td> 
-            <td class='date calendar-head' width='30'>M</td> 
-            <td class='date calendar-head' width='30'>T</td> 
-            <td class='date calendar-head' width='30'>W</td> 
-            <td class='date calendar-head' width='30'>T</td> 
-            <td class='date calendar-head' width='30'>F</td> 
-            <td class='date calendar-head' width='30'>S</td> 
+            <td class='date calendar_head' width='30'>S</td> 
+            <td class='date calendar_head' width='30'>M</td> 
+            <td class='date calendar_head' width='30'>T</td> 
+            <td class='date calendar_head' width='30'>W</td> 
+            <td class='date calendar_head' width='30'>T</td> 
+            <td class='date calendar_head' width='30'>F</td> 
+            <td class='date calendar_head' width='30'>S</td> 
         </tr>
         {for $i=1 to $first_day}
             <td>&nbsp;</td>
@@ -34,18 +34,18 @@
                 </tr><tr>
             {/if}
             {if $i==$date && $month==$month_now && $year==$year_now}
-                <td width='30' class='date {if {$event_dates[{$i}]}=='has-event'}today-event{else}today{/if}'>
-                    {if {$event_dates[{$i}]}=='has-event'}<button class="get_event" value="{$i}">{$i}</button>
+                <td width='30' class='date {if {$event_dates[{$i}]}=='has_event'}today_event{else}today{/if}'>
+                    {if {$event_dates[{$i}]}=='has_event'}<button class="get_event" value="{$i}">{$i}</button>
                     {else}{$i}{/if}
                 </td>
             {elseif $counter%7==0 || $counter%7==6}
                 <td width='30' class='date weekend {$event_dates[{$i}]}'>
-                    {if {$event_dates[{$i}]}=='has-event'}<button class="get_event" value="{$i}">{$i}</button>
+                    {if {$event_dates[{$i}]}=='has_event'}<button class="get_event" value="{$i}">{$i}</button>
                     {else}{$i}{/if}
                 </td>
             {else}
-                <td width='30' class='date normal-date {$event_dates[{$i}]}'>
-                    {if {$event_dates[{$i}]}=='has-event'}<button class="get_event" value="{$i}">{$i}</button>
+                <td width='30' class='date normal_date {$event_dates[{$i}]}'>
+                    {if {$event_dates[{$i}]}=='has_event'}<button class="get_event" value="{$i}">{$i}</button>
                     {else}{$i}{/if}
                 </td>
             {/if}
@@ -55,13 +55,13 @@
     <div id="events">
         {include file="_event.tpl"}
     </div>
-    <div id="show-event-form" class="left_panel">
-        <button id="show_form" class="right">Add Event
-    </button>
-    <div id="add-event" class="left-panel">
+    <div id="showEventForm" class="left_panel" style="padding-bottom:20px">
+        <button id="show_form" class="right">Add Event</button>
+    </div>
+    <div id="addEvent" class="left-panel" style="padding-bottom:20px">
         {include file="_event_form.tpl"}
     </div>
-    <div id="event_add_success" class="text-center"></div>
+    <div id="event_add_success" class="text_center"></div>
     {literal}
     <script>
         $(document).ready(function() {
@@ -70,10 +70,10 @@
             month = {$month};
             year = {$year};
             {literal}
-            $("#add-event").hide();
+            $("#addEvent").hide();
             $('#show_form').click(function() {
                 $(this).hide();
-                $("#add-event").show();
+                $("#addEvent").show();
             });
             var calender_url = '{/literal}{$site_root_path}common/calendar.php{literal}';
             var event_url = '{/literal}{$site_root_path}common/event.php{literal}';

@@ -74,7 +74,7 @@ class EventController extends SocialCalcController {
                 $day[2] = NULL;
             }
             if ($i == $day[2]) {
-                $event_dates_array["$i"] = "has-event";
+                $event_dates_array["$i"] = "has_event";
                 $j++;
             } else {
                 $event_dates_array["$i"] = NULL;

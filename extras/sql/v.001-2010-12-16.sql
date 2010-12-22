@@ -3,6 +3,22 @@
 --
 
 --
+-- Table structure for table sc_chat
+--
+
+CREATE TABLE sc_chat (
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  `from` VARCHAR(255) NOT NULL DEFAULT '',
+  `to` VARCHAR(255) NOT NULL DEFAULT '',
+  message TEXT NOT NULL,
+  sent DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+  recd INTEGER UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  INDEX `to` (`to`),
+  INDEX `from` (`from`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table sc_events
 --
 
@@ -18,4 +34,25 @@ CREATE TABLE sc_events (
   created_by int(11) NOT NULL,
   PRIMARY KEY (event_id),
   KEY event_id (event_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
+--
+-- Table structure for table sc_users
+--
+
+CREATE TABLE sc_users (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  user_name varchar(255) NOT NULL,
+  full_name varchar(255) NOT NULL,
+  email varchar(63) NOT NULL,
+  password varchar(255) NOT NULL,
+  avatar varchar(255) NOT NULL,
+  joined timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  type int(1) NOT NULL,
+  is_admin int(1) NOT NULL DEFAULT 0,
+  password_token varchar(63) DEFAULT NULL,
+  PRIMARY KEY (user_name),
+  KEY id (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

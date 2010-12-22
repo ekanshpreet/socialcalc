@@ -59,7 +59,7 @@ $(function() {
             url: "common/addevent.php",
             data: dataString,
             success: function() {
-                $('#add-event').hide("fast");
+                $('#addEvent').hide("fast");
                 $('#show_form').show();
                 $('#event_add_success').html("<div id='message'></div>");
                 $('#message').html("<br/><h5>New Event Added!</h5>").hide().fadeIn(1500);

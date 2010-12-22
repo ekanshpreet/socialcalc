@@ -1,4 +1,5 @@
-<form name="add-event" action="">
+<div class="left_panel">
+<form name="addEvent" action="">
     <fieldset>
         <label class="field left" for="name" id="name_label">Name:</label>
         <input type="text" name="name" id="name" size="13" value="" class="text-input right" /><br/><br/>
@@ -30,6 +31,7 @@
         <textarea name="desc" id="desc" rows="10" cols="20" value="" class="text-input right"></textarea><br/><br/>
         <label class="error" for="desc" id="desc_error">This field is required.</label><br />
               
-        <input type="submit" name="submit" class="button bigger" id="add-event-button" value="Add Event" />
+        <input type="submit" name="submit" class="button bigger" id="addEvent-button" value="Add Event" />
     </fieldset>
 </form>
+</div>

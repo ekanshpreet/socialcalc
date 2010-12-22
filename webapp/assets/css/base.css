@@ -9,18 +9,25 @@
     margin-right: auto;
 }
 #content {padding:15px;}
-.left_panel {width: 210px;}
+#mainTable {display:table-row;}
 
 .left {float: left;}
 .right {float: right;}
 .middle {padding-top:10px;}
 
-#header-bar{padding-bottom:100px;}
-#footer-bar{width:900px;}
+.columns {display: table-cell;border: none;vertical-align: top;}
+#c1 {padding: 5px;width: 210px;min-width: 210px;}
+#c2 {width: auto;padding: 20px;}
+#c3 {width: 210px;min-width: 210px;padding: 5px;}
+
+#headerBar{padding-bottom:100px;}
+#footerBar{width:900px;}
+
+.middle_column {width:360px; margin:auto}
+.left_panel {width: 210px;}
 
 /* Calendar/Events related classes/ids */
 .date {font-size:8pt; height:20px;}
 .field {padding-top:5px; width:auto;}
-.has-event button {width:30px; margin:-10px;}
-.today-event button {width:30px; margin:-10px;}
-.show-event-form {white; width:auto; margin:-10px;}
+.has_event button {width:30px; margin:-10px;}
+.today_event button {width:30px; margin:-10px;}

@@ -13,6 +13,10 @@ class HomeController extends SocialCalcController {
         $this->addHeaderJavaScript('main.js');
         $this->addPageTitle('Learning Through Collaboration');
         
+        
+        // Login Box
+        LoginController::go(false);
+        //$this->fetch('session.login.tpl');
         // Generate Calendar
         CalendarController::go(false);
         

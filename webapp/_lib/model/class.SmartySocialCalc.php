@@ -109,4 +109,6 @@ class SmartySocialCalc extends Smarty {
             parent::clear_all_cache($exp_time);
         }
     }
+    
+
 }
