@@ -126,4 +126,42 @@ class UserMySQLDAO extends PDODAO implements UserDAO {
         $ps = $this->execute($q, $vars);
         return $this->getUpdateCount($ps);
     }
+    
+    public function updateLastSeen($username) {
+        $q = " UPDATE #prefix#users SET last_seen=now() WHERE user_name=:username";
+        $vars = array(
+            ':username'=>$username
+        );
+        $ps = $this->execute($q, $vars);
+        return $this->getUpdateCount($ps);
+    }
+    
+    public function getListOfLoggedInUsers($username) {
+        $q = "SELECT user_name FROM #prefix#users WHERE last_seen > DATE_SUB(NOW(), INTERVAL 5 SECOND)";
+        $q .= " AND user_name!=:username AND is_available_to_chat=1 ORDER BY user_name";
+        $vars = array(
+            ':username'=>$username
+        );
+        $ps = $this->execute($q, $vars);
+        return $this->getDataRowsAsArrays($ps);
+    }
+    
+    public function updateChatAvailability($username, $status) {
+        $q = " UPDATE #prefix#users SET is_available_to_chat=:status WHERE user_name=:username";
+        $vars = array(
+            ':username'=>$username,
+            ':status'=>$status
+        );
+        $ps = $this->execute($q, $vars);
+        return $this->getUpdateCount($ps);
+    }
+    
+    public function getChatAvailability($username) {
+        $q = " SELECT is_available_to_chat FROM #prefix#users WHERE user_name=:username";
+        $vars = array(
+            ':username'=>$username
+        );
+        $ps = $this->execute($q, $vars);
+        return $this->getDataRowAsArray($ps);
+    }
 }

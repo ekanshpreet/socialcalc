@@ -29,7 +29,6 @@ class User {
      */
     var $avatar;
     /**
-     *
      * @var date
      */
     var $joined;
@@ -38,12 +37,21 @@ class User {
      * 0 for teacher, 1 for student
      */
     var $type;
-
+    
+    /**
+     * @var date
+     */
+    var $last_seen;
     /**
      * @var int is_admin
-     * 1 for admin rights
+     * 1 for admin rights, 0 otherwise
      */
     var $is_admin;
+    /**
+     * @var int is_available_to_chat
+     * 1 for available, 0 for logged out of chat
+     */
+    var $is_available_to_chat;
     /**
      * Constructor
      * @param array $val Array of key/value pairs
@@ -62,11 +70,17 @@ class User {
         if (isset($val["joined"])) {
             $this->joined = $val["joined"];
         }
+        if (isset($val["last_seen"])) {
+            $this->last_seen = $val["last_seen"];
+        }
         if (isset($val["type"])) {
             $this->type = $val["type"];
         }
-        if (isset($val["-s_admin"])) {
-            $this->id_admin = $val["id_admin"];
+        if (isset($val["is_admin"])) {
+            $this->is_admin = $val["is_admin"];
+        }
+        if (isset($val["is_available_to_chat"])) {
+            $this->is_available_to_chat = $val["is_available_to_chat"];
         }
     }
 }

@@ -4,8 +4,9 @@
  */
 html {background: #E6E6E6;font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;}
 img {border:none;}
-a, a:link, a:visited {text-decoration: none;color: #416A93;outline: none; border:none;}
-a:hover {text-decoration : none;color : red;}
+a, a:link, a:visited {border:none; outline: none; color: #416A93; text-decoration: none;}
+a:hover {color : red; text-decoration : none;}
+.pointer {cursor:pointer;}
 
 /* Rounded Rectangles */
 .bl {background: url(../img/bl.gif) 0 100% no-repeat white;}
@@ -27,18 +28,17 @@ a:hover {text-decoration : none;color : red;}
 /* Calendar */
 #eventsTable h3 {font-size:.8em;}
 #eventsTable p {font-size:.8em;}
-#addEvent {font-size:.7em; font-family: Verdana;}
-#showEventForm button {font-size:.7em; color: black; background-color:}
+#addEvent {font-family: Verdana; font-size:.7em;}
+#showEventForm button {color: black; font-size:.7em;}
 .calendar_head {background-color:#000000; color:white}
 .calendar_title {font-weight:bold; text-align:center;}
 .date {font-family: Verdana; padding-left:7px;}
 .weekend{color:#7e7e7e;}
 .normal_date {color: #000000;}
-.today_event {}
-.today_event button {color: #000000; background-color: #CACACA;}
-.today {color: #000000; background-color: #CACACA;}
-.selected_date {color: #FFFFFF; background-color: #C00000;}
-.has_event button {color: #000000; background-color: #C6D1DC;}
+.today_event button {background-color: #CACACA; color: #000000;}
+.today {background-color: #CACACA; color: #000000;}
+.selected_date {background-color: #C00000; color: #FFFFFF;}
+.has_event button {background-color: #C6D1DC; color: #000000;}
 .hint {color:#7e7e7e}
 
 .successmsg {
@@ -59,3 +59,7 @@ a:hover {text-decoration : none;color : red;}
 
 .ui_state_highlight p a {color:#416A93;}
 .ui_state_error p a {color:#416A93;}
+
+/* Chat Module */
+#chat_list li {list-style: none;}
+#chat_list li a {text-decoration: none;}

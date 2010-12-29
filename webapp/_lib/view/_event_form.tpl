@@ -29,9 +29,10 @@
         
         <label for="desc" id="desc_label">Description:</label>
         <textarea name="desc" id="desc" rows="10" cols="20" value="" class="text-input right"></textarea><br/><br/>
-        <label class="error" for="desc" id="desc_error">This field is required.</label><br />
+        <label class="error" for="desc" id="desc_error"></label><br />
               
-        <input type="submit" name="submit" class="button bigger" id="addEvent-button" value="Add Event" />
+        <input type="submit" name="submit" class="button bigger" id="addEventButton" value="Add Event" />
+        <input type="submit" name="hide" class="bigger" id="addEventHide" value="Cancel" />
     </fieldset>
 </form>
 </div>

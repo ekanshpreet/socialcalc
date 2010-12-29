@@ -16,15 +16,16 @@ class PasswordResetController extends SocialCalcController {
         $this->addPageTitle('Reset Password');
         $this->setViewTemplate('session.resetpassword.tpl');
         $this->disableCaching();
-        $user = $dao->getByPasswordToken($_GET['token']);
+        if (isset($_GET['token'])) {
+            $token = $_GET['token'];
+            $user = $dao->getByPasswordToken($token);
+        }
 
         if (!isset($_GET['token']) || (!$user)) {
             // token is nonexistant or bad
             $this->addErrorMessage('You have reached this page in error.');
             return $this->generateView();
         }
-        
-        $token = $_GET['token'];
 
         if (!self::validateRecoveryToken($token)) {
             $this->addErrorMessage('Your token is expired.');

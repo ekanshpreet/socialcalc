@@ -17,7 +17,6 @@ class CalendarController extends SocialCalcController {
         foreach ($data as $key=>$value) {
             $this->addToView($key, $value);
         }
-        $this->addHeaderJavaScript("calendar.js");
         
         EventController::go(false);
         

@@ -83,6 +83,7 @@ class Session {
      */
     public static function completeLogin($owner) {
         $config = Config::getInstance();
+        $_SESSION['username'] = $owner['user_name'];
         $_SESSION[$config->getValue('source_root_path')]['user'] = $owner['user_name'];
         $_SESSION[$config->getValue('source_root_path')]['user_is_admin'] = $owner['is_admin'];
     }
@@ -92,6 +93,9 @@ class Session {
      */
     public static function logout() {
         $config = Config::getInstance();
-        session_unset();
+        unset($_SESSION[$config->getValue('source_root_path')]['user']);
+        unset($_SESSION[$config->getValue('source_root_path')]['user_is_admin']);
+        unset($_SESSION[$config->getValue('source_root_path')]);
+        session_destroy();
     }
 }

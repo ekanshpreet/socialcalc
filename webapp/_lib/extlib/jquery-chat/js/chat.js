@@ -182,7 +182,7 @@ function chatHeartbeat(){
 	}
 	
 	$.ajax({
-	  url: site_root_path+"common/chat.php?action=chatheartbeat",
+	  url: "chat.php?action=chatheartbeat",
 	  cache: false,
 	  dataType: "json",
 	  success: function(data) {
@@ -238,7 +238,7 @@ function closeChatBox(chatboxtitle) {
 	$('#chatbox_'+chatboxtitle).css('display','none');
 	restructureChatBoxes();
 
-	$.post(site_root_path+"common/chat.php?action=closechat", { chatbox: chatboxtitle} , function(data){	
+	$.post("chat.php?action=closechat", { chatbox: chatboxtitle} , function(data){	
 	});
 
 }
@@ -293,7 +293,7 @@ function checkChatBoxInputKey(event,chatboxtextarea,chatboxtitle) {
 		$(chatboxtextarea).focus();
 		$(chatboxtextarea).css('height','44px');
 		if (message != '') {
-			$.post(site_root_path+"common/chat.php?action=sendchat", {to: chatboxtitle, message: message} , function(data){
+			$.post("chat.php?action=sendchat", {to: chatboxtitle, message: message} , function(data){
 				message = message.replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;");
 				$("#chatbox_"+chatboxtitle+" .chatboxcontent").append('<div class="chatboxmessage"><span class="chatboxmessagefrom">'+username+':&nbsp;&nbsp;</span><span class="chatboxmessagecontent">'+message+'</span></div>');
 				$("#chatbox_"+chatboxtitle+" .chatboxcontent").scrollTop($("#chatbox_"+chatboxtitle+" .chatboxcontent")[0].scrollHeight);
@@ -322,7 +322,7 @@ function checkChatBoxInputKey(event,chatboxtextarea,chatboxtitle) {
 
 function startChatSession(){  
 	$.ajax({
-	  url: site_root_path+"common/chat.php?action=startchatsession",
+	  url: "chat.php?action=startchatsession",
 	  cache: false,
 	  dataType: "json",
 	  success: function(data) {

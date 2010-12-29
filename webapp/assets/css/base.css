@@ -3,10 +3,10 @@
  * Holds details about classes and ids describing dimensions of an HTML tag
  */
 #main {
-    margin-top: 20px;
-    width: 900px;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 20px;
+    width: 900px;
 }
 #content {padding:15px;}
 #mainTable {display:table-row;}
@@ -15,19 +15,30 @@
 .right {float: right;}
 .middle {padding-top:10px;}
 
-.columns {display: table-cell;border: none;vertical-align: top;}
-#c1 {padding: 5px;width: 210px;min-width: 210px;}
-#c2 {width: auto;padding: 20px;}
-#c3 {width: 210px;min-width: 210px;padding: 5px;}
+.columns {border: none; display: table-cell; vertical-align: top;}
+#c1 {min-width: 210px; padding: 5px;width: 210px;}
+#c2 {padding: 20px; width: auto;}
+#c3 {min-width: 210px; padding: 5px; width: 210px;}
 
 #headerBar{padding-bottom:100px;}
 #footerBar{width:900px;}
 
-.middle_column {width:360px; margin:auto}
+.middle_column {margin:auto; width:360px;}
 .left_panel {width: 210px;}
 
 /* Calendar/Events related classes/ids */
 .date {font-size:8pt; height:20px;}
 .field {padding-top:5px; width:auto;}
-.has_event button {width:30px; margin:-10px;}
-.today_event button {width:30px; margin:-10px;}
+.has_event button {margin:-10px; width:30px;}
+.today_event button {margin:-10px; width:30px;}
+
+#chat_list {
+    border-bottom: 1px solid gray;
+    margin-left: 0;
+    max-height:300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding-left: 0px;
+    width: 200px;
+}
+#chat_list li {border-top: 1px solid gray; margin: 0; padding: 0.25em;}

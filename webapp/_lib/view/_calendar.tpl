@@ -56,12 +56,13 @@
         {include file="_event.tpl"}
     </div>
     <div id="showEventForm" class="left_panel" style="padding-bottom:20px">
-        <button id="show_form" class="right">Add Event</button>
+        <button id="showForm" class="right">Add Event</button>
     </div>
-    <div id="addEvent" class="left-panel" style="padding-bottom:20px">
+    <div id="addEvent" style="padding-bottom:20px">
         {include file="_event_form.tpl"}
     </div>
-    <div id="event_add_success" class="text_center"></div>
+    <div id="eventAddSuccess" class="text_center"></div>
+    <script src="{$site_root_path}assets/js/calendar.js" type="text/javascript"></script>
     {literal}
     <script>
         $(document).ready(function() {
@@ -71,7 +72,7 @@
             year = {$year};
             {literal}
             $("#addEvent").hide();
-            $('#show_form').click(function() {
+            $('#showForm').click(function() {
                 $(this).hide();
                 $("#addEvent").show();
             });

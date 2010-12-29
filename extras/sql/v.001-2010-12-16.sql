@@ -8,14 +8,14 @@
 
 CREATE TABLE sc_chat (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  `from` VARCHAR(255) NOT NULL DEFAULT '',
-  `to` VARCHAR(255) NOT NULL DEFAULT '',
+  from_user VARCHAR(255) NOT NULL DEFAULT '',
+  to_user VARCHAR(255) NOT NULL DEFAULT '',
   message TEXT NOT NULL,
   sent DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
   recd INTEGER UNSIGNED NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
-  INDEX `to` (`to`),
-  INDEX `from` (`from`)
+  INDEX to_user (to_user),
+  INDEX from_user (from_user)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -50,8 +50,10 @@ CREATE TABLE sc_users (
   password varchar(255) NOT NULL,
   avatar varchar(255) NOT NULL,
   joined timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  last_seen timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   type int(1) NOT NULL,
   is_admin int(1) NOT NULL DEFAULT 0,
+  is_available_to_chat int(1) NOT NULL DEFAULT 1,
   password_token varchar(63) DEFAULT NULL,
   PRIMARY KEY (user_name),
   KEY id (id)

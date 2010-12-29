@@ -89,4 +89,18 @@ interface UserDAO {
      * @return No. of affected rows
      */
     public function updatePassword($username, $pwd);
+    
+    /**
+     * Updates last seen time of the user
+     * @param str $username
+     * @return int No. of rows affected
+     */
+    public function updateLastSeen($username);
+    
+    /**
+     * Returns a list of logged in users except the user himself
+     * @param str $username
+     * @return array Usernames
+     */
+    public function getListOfLoggedInUsers($username);
 }

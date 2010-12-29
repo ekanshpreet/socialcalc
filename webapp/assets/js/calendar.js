@@ -1,12 +1,17 @@
 // Add Event Form Validation
 // TODO Add javascript functions to validate Date and Time
-$(function() {
     $(".error").hide();
     var empty_field = "This field is required";
     var is_not_number = "This field must be numeric";
-    $(".button").click(function() {
-	$('.error').hide();
-  	var name = $("input#name").val();
+    $("#addEventHide").click(function() {
+        $(showForm).show();
+        $("#addEvent").hide("slow");
+        return false;
+    });
+    $("#addEventButton").click(function() {
+  	var add_event_url = site_root_path+"common/addevent.php";
+        $(".error").hide();
+        var name = $("input#name").val();
   	if (name == "") {
             $("label#name_error").text(empty_field);
             $("label#name_error").show();
@@ -56,16 +61,15 @@ $(function() {
 	}
 	$.ajax({
             type: "POST",
-            url: "common/addevent.php",
+            url: add_event_url,
             data: dataString,
             success: function() {
                 $('#addEvent').hide("fast");
-                $('#show_form').show();
-                $('#event_add_success').html("<div id='message'></div>");
+                $('#showForm').show();
+                $('#eventAddSuccess').html("<div id='message'></div>");
                 $('#message').html("<br/><h5>New Event Added!</h5>").hide().fadeIn(1500);
 		$('#message').show().fadeOut(1500);
             }
            });
         return false;
 	});
-});

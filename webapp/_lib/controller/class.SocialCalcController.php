@@ -31,9 +31,18 @@ abstract class SocialCalcController {
     protected $header_scripts = array ();
     
     /**
+     * @var session_exists
+     */
+    private static $session_exists;
+    
+    /**
      * Constructor to initialize the Main Controller
      */
     public function __construct() {
+        if (!self::$session_exists) {
+            self::$session_exists = 1;
+            session_start();
+        }
         $config = Config::getInstance();
         $this->smarty = new SmartySocialCalc();
         $this->app_session = new Session();

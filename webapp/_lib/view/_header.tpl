@@ -6,7 +6,8 @@
   <link rel="shortcut icon" type="image/x-icon" href="{$site_root_path}assets/img/favicon.png">
   <link type="text/css" rel="stylesheet" href="{$site_root_path}assets/css/base.css">
   <link type="text/css" rel="stylesheet" href="{$site_root_path}assets/css/style.css">
-
+  <link type="text/css" rel="stylesheet" href="{$site_root_path}_lib/extlib/jquery-chat/css/chat.css">
+  
   <!-- jquery -->
   <script type="text/javascript" src="{$site_root_path}_lib/extlib/jquery/jquery-1.4.4.min.js"></script>
   <script type="text/javascript">var site_root_path = '{$site_root_path}';</script>
