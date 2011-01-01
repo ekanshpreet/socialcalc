@@ -39,6 +39,80 @@ CREATE TABLE sc_events (
 
 
 --
+-- Table structure for table sc_students
+--
+
+CREATE TABLE sc_students (
+  student_id int(11) NOT NULL,
+  roll_number varchar(63) NOT NULL,
+  class varchar(11) NOT NULL,
+  section varchar(2) NOT NULL,
+  subject varchar(63) DEFAULT NULL,
+  PRIMARY KEY (roll_number,class,section,subject),
+  FOREIGN KEY (student_id) REFERENCES sc_users(id),
+  KEY student_id (student_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table sc_student_sheets
+--
+
+CREATE TABLE sc_student_sheets (
+  sheet_id int(11) NOT NULL AUTO_INCREMENT,
+  in_response_to int(11) DEFAULT NULL,
+  student_id int(11) NOT NULL,
+  link varchar(255) NOT NULL,
+  subject varchar(63) DEFAULT NULL,
+  type varchar(63) DEFAULT NULL,
+  date_created timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  date_last_modified timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  published int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (sheet_id),
+  FOREIGN KEY (student_id) REFERENCES sc_students(student_id),
+  FOREIGN KEY (in_response_to) REFERENCES sc_teacher_sheets(sheet_id),
+  KEY student_id (student_id),
+  KEY subject (subject)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table sc_teachers
+--
+
+CREATE TABLE sc_teachers (
+  teacher_id int(11) NOT NULL,
+  employee_number varchar(63) NOT NULL,
+  class varchar(11) NOT NULL,
+  section varchar(2) NOT NULL,
+  subject varchar(63) DEFAULT NULL,
+  PRIMARY KEY (employee_number,class,section,subject),
+  FOREIGN KEY (teacher_id) REFERENCES sc_users(id),
+  KEY teacher_id (teacher_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table sc_teacher_sheets
+--
+
+CREATE TABLE sc_teacher_sheets (
+  sheet_id int(11) NOT NULL AUTO_INCREMENT,
+  teacher_id int(11) NOT NULL,
+  link varchar(255) NOT NULL,
+  class varchar(11) NOT NULL,
+  section varchar(2) NOT NULL,
+  subject varchar(63) DEFAULT NULL,
+  type varchar(63) DEFAULT NULL,
+  date_of_submission timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  date_created timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  date_last_modified timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  published int(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (sheet_id),
+  FOREIGN KEY (teacher_id) REFERENCES sc_teachers(teacher_id),
+  KEY teacher_id (teacher_id),
+  KEY class_and_section (class, section),
+  KEY class_section_subject (class, section, subject)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table sc_users
 --
 

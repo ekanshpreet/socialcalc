@@ -46,7 +46,9 @@ abstract class SocialCalcController {
         $config = Config::getInstance();
         $this->smarty = new SmartySocialCalc();
         $this->app_session = new Session();
+        MenuController::go();
         if ($this->isLoggedIn()) {
+            $this->addToView('is_logged_in', true);
             $this->addToView('logged_in_user', $this->getLoggedInUser());
         }
         if ($this->isAdmin()) {

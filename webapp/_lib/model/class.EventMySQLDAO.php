@@ -10,8 +10,11 @@
 class EventMySQLDAO extends PDODAO implements EventDAO  {
 
     public function getEventsOfDay($date) {
-        $q = "SELECT * FROM #prefix#events WHERE date='$date' ORDER BY time";
-        $ps = $this->execute($q);
+        $q = "SELECT * FROM #prefix#events WHERE date=:date ORDER BY time";
+        $vars = array (
+            ':date'=>$date
+        );
+        $ps = $this->execute($q, $vars);
         return $this->getDataRowsAsArrays($ps);
     }
     
