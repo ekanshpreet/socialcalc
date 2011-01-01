@@ -32,3 +32,16 @@
         </div>
         <div class="bl"><div class="br"><div class="tl"><div class="tr">
             <div id="content">
+                <!-- Main Menu -->
+                <div id="menuHeader"> 
+                    <ul id="mainMenu">
+                        {foreach from=$main_menu item=foo}                        
+                        {if $foo['title']=='Login'}
+                        <li>
+                            {if isset($is_logged_in)}<div style="float:right">{include file="status.tpl"}</div>
+                            {else} <a href="{$site_root_path}session/login.php">Login</a>{/if}
+                        </li>
+                        {else}<li><a href="{$site_root_path}{$foo['url']|urlencode}">{$foo['title']}</a></li>{/if}
+                        {/foreach}
+                    </ul>
+                </div><br>

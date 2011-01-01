@@ -17,8 +17,6 @@ class HomeController extends SocialCalcController {
         if(!$this->isLoggedIn()) {
             // Login Box
             LoginController::go(false);
-            $this->addToView('is_logged_in', true);
-            $this->addToView('logged_in_user', $this->getLoggedInUser());
         } else {
             ChatListController::go(false);
         }
