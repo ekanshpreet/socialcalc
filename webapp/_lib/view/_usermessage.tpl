@@ -1,7 +1,7 @@
     {if isset($successmsg) && $successmsg!=''}
     <p class="successmsg text_center">
         {$successmsg}
-    </p>    
+    </p>
     {/if}
     {if isset($errormsg)}
         <p class="errormsg text_center">

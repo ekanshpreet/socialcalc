@@ -22,6 +22,8 @@ class HomeController extends SocialCalcController {
         }
         // Generate Calendar
         CalendarController::go(false);
+		// Generate Notifications
+		NotificationController::go(false);
             
         $this->generateView();
     }
