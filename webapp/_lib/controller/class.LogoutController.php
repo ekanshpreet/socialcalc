@@ -10,7 +10,7 @@
 class LogoutController extends SocialCalcAuthController {
     public function authControl() {
         $this->app_session->logout();
-        $controller = new HomeController(true);
+        $controller = new HomePageController(true);
         $controller->addSuccessMessage("You have successfully logged out.");
         return $controller->go();
     }

@@ -1,15 +1,15 @@
 <?php
 /**
- * Home Controller
+ * Home Page Controller
  *
  * Controller to generate the view for the home page
  *
  */
-class HomeController extends SocialCalcController {
+class HomePageController extends SocialCalcController {
         
     public function go() {
         $this->disableCaching();
-        $this->setViewTemplate('home.tpl');
+        $this->setViewTemplate('homepage.tpl');
         $this->addHeaderJavaScript('main.js');
         $this->addHeaderJavaScript('chat.js');
         $this->addPageTitle('Learning Through Collaboration');

@@ -4,5 +4,5 @@
  */
 require_once("init.php");
 
-$controller = new HomeController();
+$controller = new HomePageController();
 echo $controller->go();

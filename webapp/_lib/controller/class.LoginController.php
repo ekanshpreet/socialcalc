@@ -17,7 +17,7 @@ class LoginController extends SocialCalcController {
         $this->disableCaching();
         //don't show login form if already logged in
         if ($this->isLoggedIn()) {
-            $controller = new HomeController();
+            $controller = new HomePageController();
             return $controller->go();
         } else  {
             if (isset($_POST['Submit']) && $_POST['Submit']=='Log In'
@@ -45,7 +45,7 @@ class LoginController extends SocialCalcController {
                     } else {
                         // this sets variables in the session
                         $session->completeLogin($user);
-                        $controller = new HomeController(true);
+                        $controller = new HomePageController(true);
                         return $controller->go();
                     }
                 }

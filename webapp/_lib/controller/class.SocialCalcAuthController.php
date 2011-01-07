@@ -26,8 +26,8 @@ abstract class SocialCalcAuthController extends SocialCalcController {
      * @TODO bounce back to original action once signed in
      */
     protected function bounce() {
-        if (get_class($this)=='HomeController') {
-            $controller = new HomeController(true);
+        if (get_class($this)=='HomePageController') {
+            $controller = new HomePageController(true);
             return $controller->go();
         } else {
             $config = Config::getInstance();
