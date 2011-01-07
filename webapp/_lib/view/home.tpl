@@ -1,7 +1,7 @@
 {include file="_header.tpl"}
 <div id="mainTable">
     <div class="columns" id="c1">
-		{include file="_notification.tpl"}
+	{include file="_notification.tpl"}
         {include file="_calendar.tpl"}
     </div>
     <div class="columns" id="c2">

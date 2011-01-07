@@ -63,10 +63,9 @@
       <small>
         <br>
       </small><br>
-	  <div class="middle">
-	   {$captcha}
-	  </div>
-	  <br><br>
+      <div class="middle">
+	{$captcha}
+      </div><br><br>
       <input type="submit" name="Submit" id="login-save" value="Register">
     </form>
   </div>

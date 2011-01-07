@@ -36,7 +36,17 @@ CREATE TABLE sc_events (
   KEY event_id (event_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+--
+-- Table structure for table sc_notifications
+--
 
+CREATE TABLE sc_notifications (
+  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+  title varchar(255) NOT NULL, 
+  message TEXT NOT NULL, 
+  author varchar(255) NOT NULL, 
+  issue_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Table structure for table sc_students
@@ -132,22 +142,3 @@ CREATE TABLE sc_users (
   PRIMARY KEY (user_name),
   KEY id (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-
-
-
---
--- Table structure for table sc_notifications
---
-
-
-CREATE TABLE sc_notifications (
-  id int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
-  title varchar(255) NOT NULL, 
-  message TEXT NOT NULL, 
-  author varchar(255) NOT NULL, 
-  issue_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
- ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
- 
- 
- 

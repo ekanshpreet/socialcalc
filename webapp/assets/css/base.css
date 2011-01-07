@@ -42,3 +42,7 @@
     width: 200px;
 }
 #chat_list li {border-top: 1px solid gray; margin: 0; padding: 0.25em;}
+
+/* Notifications */
+#notifications-bar .title {padding:5px;}
+#notifications-bar {margin:15px auto; padding:5px 5px 0; width:210px;}

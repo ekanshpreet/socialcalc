@@ -22,13 +22,13 @@ class RegisterController extends SocialCalcController {
     public function __construct($session_started=false) {
         parent::__construct($session_started);
         $config = Config::getInstance();
-		$site_root_path=$config->getValue('source_root_path');
-		require_once('/../extlib/recaptcha-php-1.11/recaptchalib.php');
-		$recaptchaPublicKey="6LfDKsASAAAAAJJUp9Sg4uBzGG9h4RbOohsjfFir";
-		$recaptcha=recaptcha_get_html($recaptchaPublicKey);
-		$key='captcha';
-        $this->addToView($key, $recaptcha);
-		$this->setViewTemplate('session.register.tpl');
+	$site_root_path=$config->getValue('source_root_path');
+        // TODO find better method to do this
+	require_once('/../extlib/recaptcha-php-1.11/recaptchalib.php');
+	$recaptchaPublicKey="6LfDKsASAAAAAJJUp9Sg4uBzGG9h4RbOohsjfFir";
+	$recaptcha=recaptcha_get_html($recaptchaPublicKey);
+        $this->addToView('captcha', $recaptcha);
+	$this->setViewTemplate('session.register.tpl');
         $this->addPageTitle('Register');
     }
 
@@ -47,20 +47,16 @@ class RegisterController extends SocialCalcController {
                     }
                 }
                 if (!$this->is_missing_param) {
-					
-					$recaptchaPrivateKey = "6LfDKsASAAAAAAIFM4rrJjJOwQt4B5zarcHhX3lW";
-					$resp = recaptcha_check_answer ($recaptchaPrivateKey,
-                                $_SERVER["REMOTE_ADDR"],
-                                $_POST["recaptcha_challenge_field"],
-                                $_POST["recaptcha_response_field"]);
-								
+		    $recaptchaPrivateKey = "6LfDKsASAAAAAAIFM4rrJjJOwQt4B5zarcHhX3lW";
+		    $resp = recaptcha_check_answer ($recaptchaPrivateKey, $_SERVER["REMOTE_ADDR"],
+                            $_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
                     if (!Utils::validateEmail($_POST['email'])) {
                         $this->addErrorMessage("Incorrect email. Please enter valid email address.");
                     } elseif (strcmp($_POST['pass1'], $_POST['pass2']) || empty($_POST['pass1'])) {
                         $this->addErrorMessage("Passwords do not match.");
                     } elseif (!$resp->is_valid ) {
-						$this->addErrorMessage("The characters entered do not match with the characters hown in the Image.");
-					}else {
+                        $this->addErrorMessage("The characters entered do not match with the characters hown in the Image.");
+		    } else {
                         if ($user_dao->doesUserExist($_POST['username'])) {
                             $this->addErrorMessage("User account already exists.");
                         } else {

@@ -9,7 +9,7 @@
 interface NotificationDAO {
     /**
      * Inserts Notifications in table 
-	 * @param array Details of notification
+     * @param array Details of notification
      * @return int Update Count
      */
     public function insertNotification($val);
@@ -19,5 +19,4 @@ interface NotificationDAO {
      * @return array Notifications
      */
      public function retrieveNotifications();
-
 }

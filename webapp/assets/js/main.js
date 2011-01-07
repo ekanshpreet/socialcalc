@@ -13,9 +13,9 @@ function updateLastSeen()
 /* Script to display list of online users */
 function updateChatList()
 {
-        var chat_list_url = site_root_path+"common/chatlist.php";
-        $("#main_container").load(chat_list_url);
-        setTimeout("updateChatList()",5000);
+    var chat_list_url = site_root_path+"common/chatlist.php";
+    $("#main_container").load(chat_list_url);
+    setTimeout("updateChatList()",5000);
 }
 $(document).ready(function() {
     updateLastSeen();

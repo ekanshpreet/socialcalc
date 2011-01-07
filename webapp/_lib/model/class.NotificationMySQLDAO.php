@@ -26,6 +26,3 @@ class NotificationMySQLDAO extends PDODAO implements NotificationDAO  {
         return $this->getDataRowsAsArrays($ps);
     }
 }
-
- 
- ?>
