@@ -107,3 +107,42 @@ a:hover {color : red; text-decoration : none;}
 }
 #accountBox {margin-left:24px;}
 #accountBox a { color: #416A93; font-size:11px; padding:0px;}
+
+/* Notifications */
+
+#notifications-bar { 
+
+width:210px; 
+background:#EAF4F5; 
+padding:5px 5px 0; 
+font-family:Verdana,Arial,Sans-Serif;
+font-size:14px;
+margin:15px auto;
+moz-border-radius-topleft:6px;
+    border-top-left-radius: 6px;		
+    -moz-border-radius-topright:6px;
+    border-top-right-radius: 6px;
+    -moz-border-radius-bottomright:6px;
+    border-bottom-right-radius: 6px;
+    -moz-border-radius-bottomleft:6px;
+    border-bottom-left-radius: 6px;
+	}
+
+
+#notifications-bar a { text-decoration:none; }
+#notifications-bar img { border: 2px solid #FFFFFF; }
+
+#notifications-bar .title {
+text-align:center;
+font-size:18px;
+font-weight:bold;
+padding:5px;
+font-family: Lucida sans;
+}
+
+.notifications-jcarousellite { width:200px; }
+.notifications-jcarousellite ul li{ list-style:none; display:block; padding-bottom:1px; margin-bottom:5px; }
+/*.notifications-jcarousellite .thumbnail { float:left; width:110px; }*/
+.notifications-jcarousellite .info { float:right; width:190px;height:50px; }
+.notifications-jcarousellite .info span.cat { display: block; font-size:10px; color:#808080; }
+.clear { clear: both; }
