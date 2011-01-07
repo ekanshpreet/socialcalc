@@ -2,7 +2,7 @@
 <div id="mainTable">
     <div class="columns" id="c1">
 	{include file="_notification.tpl"}
-    {include file="_calendar.tpl"}
+	{include file="_calendar.tpl"}
     </div>
     <div>
 	<div class="columns" id="c2">

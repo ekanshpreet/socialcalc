@@ -15,7 +15,7 @@
     <script type="text/javascript" src="{$site_root_path}assets/js/{$script}"></script>
   {/foreach}
 </head>
-<body>
+<body onresize="spreadsheet.DoOnResize();" onload="spreadsheet.DoOnResize();">
     <div id="main">
         <div id="headerBar">
             <div class="left">
