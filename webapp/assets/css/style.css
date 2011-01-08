@@ -64,6 +64,13 @@ a:hover {color : red; text-decoration : none;}
 #chat_list li {list-style: none;}
 #chat_list li a {text-decoration: none;}
 
+
+/* Image Gallery */
+
+#imagegallery_container{padding: 20px 50px;}
+#imagegallery{position: relative; visibility: hidden;}
+#imagegallery .gallerydesctext{text-align: left; padding: 2px 5px;}
+
 /* Main Menu */
 #menuHeader {
     border:1px solid #b2bbc4;
