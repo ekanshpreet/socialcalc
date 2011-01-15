@@ -7,6 +7,7 @@ img {border:none;}
 a, a:link, a:visited {border:none; outline: none; color: #416A93; text-decoration: none;}
 a:hover {color : red; text-decoration : none;}
 .pointer {cursor:pointer;}
+.hide {display:none;}
 
 /* Rounded Rectangles */
 .bl {background: url(../img/bl.gif) 0 100% no-repeat white;}
@@ -149,3 +150,5 @@ a:hover {color : red; text-decoration : none;}
 
 /* SocialCalc Spreadsheet */
 #tableeditor {font-family:verdana,helvetica,sans-serif;font-size:small;}
+.testclass {border:2px dotted red;}
+.testclass2 {background-image:url(images/sc-logo.gif);}

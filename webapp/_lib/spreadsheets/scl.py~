@@ -1,0 +1,412 @@
+import os
+import cgi
+import datetime
+from google.appengine.ext.webapp import template
+from google.appengine.api import users
+from google.appengine.ext import webapp
+from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext import db
+from google.appengine.api import memcache
+from django.utils import simplejson 
+from google.appengine.ext.webapp import util
+
+#Database class for information about the sheet
+class Sheet_data(db.Model):
+    content = db.TextProperty()
+    name = db.StringProperty(multiline=False)
+    shid = db.StringProperty(multiline = False)  
+    index = db.IntegerProperty()
+    author = db.StringProperty(multiline=False) 
+         
+class Sheet_details(db.Model):
+    name = db.StringProperty(multiline = False)
+    indices = db.IntegerProperty()
+    author = db.StringProperty(multiline = False)
+    shid = db.StringProperty(multiline = True)
+    date = db.DateTimeProperty(auto_now_add = True)  
+    collaborated = db.IntegerProperty(default = 1)     
+    coll_with = db.StringListProperty()
+    signature = db.StringProperty(multiline = True)  
+         
+
+
+#Database class for information about user acccount
+class Userdata(db.Model):
+    uname = db.StringProperty(multiline=False)
+    password = db.StringProperty(multiline=False) 
+    email = db.StringProperty(multiline=False)
+
+
+
+
+class MainPage(webapp.RequestHandler):
+    def get(self):
+        template_values = { 'title':'AJAX Add (via GET)', }
+        path = os.path.join(os.path.dirname(__file__), "testworkbook.html")
+        self.response.out.write(template.render(path, template_values))
+
+
+class RPCHandler(webapp.RequestHandler):
+    """ Allows the functions defined in the RPCMethods class to be RPCed."""
+    def __init__(self):
+        webapp.RequestHandler.__init__(self)
+        self.methods = RPCMethods()
+
+    def post(self):
+        try:
+            dbg = "1"
+            args = simplejson.loads(self.request.body)
+            dbg = "2"
+            func,arg = args[0],args[1:]
+            if func[0] == '_':
+                self.error(403) # access denied
+                return
+
+            func = getattr(self.methods, func, None)
+            if not func:
+                self.error(404) # file not found
+                return
+           
+            result = func(*arg)
+            self.response.out.write(simplejson.dumps(str(result)))
+        except:
+            self.response.out.write(simplejson.dumps(str("Server Error ")))
+
+class RPCMethods:
+    """ Defines the methods that can be RPCed.
+    NOTE: Do not allow remote callers access to private/protected "_*" methods.
+    """
+
+    def funct(self, *args):
+        # The JSON encoding may have encoded integers as strings.
+        # Be sure to convert args to any mandatory type(s).
+        sm = 0
+        for arg in args:
+           sm += int(arg)  
+        #ints = [int(arg) for arg in args]
+        return sm
+
+    def demo(self,*args):
+        try:
+            det = Userdata()
+            det.uname = "user"
+            det.password = "pass"
+            det.email = "abc@demo.com" 
+            det.put()
+            det = Userdata()
+            det.uname = "palm"
+            det.password = "palm"
+            det.email = "palm@demo.com"
+            det.put()
+            return ("done")
+        except:
+            return ("error")      
+                
+    def savesheet(self,*args):   
+        try:
+            a = 0
+            arg_count = 0
+            for arg in args:
+                arg_count += 1
+                if(arg_count == 1):
+                    user = str(arg)
+                elif(arg_count == 2):
+                    name = str(arg)
+                elif(arg_count == 3):
+                    string = str(arg)  
+                    break  
+            a = 5 
+            dbg = 0
+            quant = 1000000
+            length = len(string) 
+            parts =  length/quant
+            start_quant = 0
+            end_quant = quant 
+            loop = parts + 1
+            indx = 1  
+            ind = loop 
+            found = False
+            a = 7
+            sheetd = Sheet_details.gql("WHERE name = :name AND author = :user",
+                                      name = name,user = user)
+            ###Update the sheet details if it does exist 
+            for sheet in sheetd:
+                found = True
+                indices = sheet.indices
+                dt = sheet.shid
+                sheet.name = name
+                sheet.indices = loop
+                sheet.put()
+            a = 8
+            dbg = 1  
+            if(found == True):    ##Remove all previous details of the sheet
+                while(indices):
+                    sheets = Sheet_data.all()  
+                    for sheet in sheets:
+                        if((sheet.name == name) and (sheet.author == user)):
+                            sheet.delete()
+                            indices -= 1
+                            if(indices == 0):
+                                break
+            
+            else:                   ###The sheet does not already exist.Update the sheet details
+            
+                sheetdet = Sheet_details()
+                sheetdet.name = name
+                sheetdet.author = user
+                sheetdet.collaborated = 1
+                sheetdet.coll_with = ["$self$"];
+                dt = str(datetime.datetime.today())
+                sheetdet.shid = dt
+                sheetdet.indices = ind
+                sheetdet.put()   
+
+            dbg = 2
+            while(loop):
+                sheetst = Sheet_data()
+                save_string = string[start_quant:end_quant] 
+                start_quant = end_quant
+                end_quant = end_quant + quant
+                sheetst.content = db.Text(save_string)
+                sheetst.name = name
+                sheetst.author = user
+                sheetst.index = indx
+                indx = indx + 1
+                loop = loop - 1
+                sheetst.shid = dt
+                dbg = 4
+                sheetst.put()           
+                    
+            return("Workbook Saved");                
+        except:
+            b = 4
+            return("Error!!")    
+
+    def openwbook(self,*args):
+        try:
+            arg_count = 0
+            for arg in args:
+                arg_count += 1
+                if(arg_count == 1):
+                    user = str(arg)
+                elif(arg_count == 2):
+                    name = str(arg)
+                else:
+                    email = str(arg)
+                    break
+            dbg = 5
+            parts = {} 
+            found = False  
+            strr = ""
+            sheetd = Sheet_details.gql("WHERE name = :name AND author = :user",
+                                       name = name,user = user)
+            for sheet in sheetd:
+                found = True
+                dt = sheet.shid
+                #liste = str(sheet.coll_with)
+                #if(sheet.collaborated > 1):
+                #    return("coll" + user)
+                indcs = sheet.indices
+                break
+            """if(found == False):
+                sheetd = Sheet_details.gql("WHERE name = :name AND coll_with = :email",
+                                           name = name, email = email)
+                for sheet in sheetd:
+                    auth = sheet.author
+                    return("coll" + str(auth))
+                   
+                return("no_match")"""
+            dbg = 7  
+            if (found == True):
+                sheets = Sheet_data.all()
+                found = 0 
+                for sheet in sheets:
+                    if((sheet.shid == dt) and (sheet.author == user)):
+                        indx = sheet.index
+                        parts[indx] = sheet.content
+                        found = found + 1 
+                        if(found == indcs):
+                            break
+                dbg = 9
+                avail = range(1,indcs+1)
+                for ind in avail:
+                    a = 5
+                    strr = strr + parts[ind] 
+                #return(liste)
+                return(strr)
+            return("No Workbook found")
+             
+        except:
+            a = 7
+            return (str(dbg))   
+
+    def conflogin(self,*args):
+        try:
+            arg_count = 0
+            for arg in args:
+                arg_count += 1
+                if(arg_count == 1):
+                    rname = str(arg)
+                elif(arg_count == 2):
+                    rpass = str(arg)
+            don = "false"
+            usdet = Userdata.gql("WHERE uname =:rname",
+                                 rname = rname)
+            for us in usdet:
+                if(us.password == rpass): 
+                    don = "true"
+                break
+            return str(don) 
+        except:
+            return ("error")    
+       
+    def synch(self,*args):
+        try:
+            arg_count = 0
+            for arg in args:
+                arg_count += 1
+                if(arg_count == 1):
+                    sheet_id = str(arg)
+                elif(arg_count == 2):
+                    author = str(arg)
+                elif(arg_count == 3):
+                    sh_name = str(arg)
+                elif(arg_count == 4):
+                    sign = str(arg)
+                elif(arg_count == 5):
+                    ischang = str(arg)     
+                else:
+                    cont = str(arg)
+                    break
+            dbg = 1
+            ret = ""  
+            #return("polo")  
+            don = "false"
+            toup = False
+            quant = 1000000
+            ##sign = "no_change"  
+            length = len(cont) 
+            parts =  length/quant
+            start_quant = 0
+            end_quant = quant 
+            loop = parts + 1
+            indx = 1  
+            ind = loop
+            dbg = 2    
+            if(sheet_id == ""): ###First time, save the sheet
+                sheetdet = Sheet_details()
+                dbg = 3
+                sheetdet.name = sh_name
+                sheetdet.author = author
+                dbg = 4 
+                sheetdet.collaborated = 1
+                sheetdet.coll_with = ["$self$"];
+                dbg = 5
+                dt = str(datetime.datetime.today())
+                sheetdet.shid = dt
+                dbg = 6
+                sheetdet.indices = ind
+                sgn = dt
+                dbg =  9 
+                sheetdet.signature = sgn  
+                sheetdet.put()
+                dbg = 10   
+                toup = True
+                ret += "fsave"
+            else:
+                sheetd = Sheet_details.gql("WHERE name = :name AND author = :user",
+                                           name = sh_name,user = author)
+                cl_sign = ""  
+                dbg = 103
+                for sheet in sheetd:
+                    found = True
+                    cl_sign = sheet.signature
+                    break 
+                dbg = 104
+                if(cl_sign == sign):  ##Signature match
+                    if(ischang == "true"): ##Change at the client
+                        toup = True
+                        for sheet in sheetd:
+                            found = True
+                            indices = sheet.indices
+                            dt = sheet.shid
+                            sheet.name = sh_name
+                            sheet.indices = loop
+                            dbg = 105
+                            sgn = str(datetime.datetime.today())
+                            dbg =106  
+                            sheet.signature = sgn  
+                            sheet.put()   
+                            break  
+                        ret = "ssave"
+                        found = 0 
+                        parts = {}
+                        while(indices):    ##Remove all previous details of the sheet
+                            sheets = Sheet_data.all()  
+                            for sheet in sheets:
+                                if((sheet.name == sh_name) and (sheet.author == author)):
+                                    sheet.delete()
+                                    indices -= 1
+                                    if(indices == 0):
+                                        break
+                else:        ##Signature donot match
+                    if(ischang == "false"): #Only cloud version changed
+                        toup = False
+                        for sheet in sheetd:
+                            dt = sheet.shid
+                            indcs = sheet.indices
+                            sgn = sheet.signature
+                            break    
+                        dbg = 107
+                        sheets = Sheet_data.all()
+                        found = 0 
+                        dbg = 108
+                        parts = {}
+                        for sheet in sheets:
+                            if((sheet.shid == dt) and (sheet.author == author)):
+                                dbg = 109
+                                indx = sheet.index
+                                parts[indx] = sheet.content
+                                found = found + 1 
+                                if(found == indcs):
+                                    break
+                        strr = ""
+                        dbg = 108
+                        avail = range(1,indcs+1)
+                	for ind in avail:
+                    	    a = 5
+                            strr = strr + parts[ind] 
+                        ret = "sopen" + "$" + sgn + "$" + str(strr)
+            if(toup):                   
+                while(loop):
+                    sheetst = Sheet_data()
+                    save_string = cont[start_quant:end_quant] 
+                    start_quant = end_quant
+                    dbg = 22 
+                    end_quant = end_quant + quant
+                    sheetst.content = db.Text(save_string)
+                    sheetst.name = sh_name
+                    sheetst.author = author
+                    dbg = 23  
+                    sheetst.index = indx
+                    indx = indx + 1
+                    loop = loop - 1
+                    dbg = 24
+                    sheetst.shid = dt
+                    dbg = 25
+                    ret += "$" + sgn
+                    sheetst.put()
+            dbg = 10 
+            return(str(ret)) 
+        except:
+            return ("error") 
+        
+def main():
+    app = webapp.WSGIApplication([
+        ('/',MainPage),
+        ('/rpc', RPCHandler),
+        ], debug=True)
+    util.run_wsgi_app(app)
+
+if __name__ == '__main__':
+    main()

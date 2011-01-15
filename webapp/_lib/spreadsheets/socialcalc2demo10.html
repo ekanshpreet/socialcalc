@@ -2,7 +2,7 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>SocialCalc 0.9.1</title>
+<title>SocialCalc 0.7.10</title>
 <script type="text/javascript" src="socialcalcconstants.js"></script>
 <script type="text/javascript" src="socialcalc-3.js"></script>
 <script type="text/javascript" src="socialcalctableeditor.js"></script>
@@ -28,41 +28,433 @@ function setmsg(str) {document.getElementById("msg").innerHTML = str;}
 
 //   window.onerror = function(m, u, l){ addmsg(m+" at line "+l); return true;};
 
-//////////////////////////////
+   // Create the spreadsheet control, but don't initialize yet
+
+   var spreadsheet = new SocialCalc.SpreadsheetControl();
+   var savestr = "";
+
+   // Set up the tabs we want
+
+   // Remove Audit
+
+   spreadsheet.tabs.splice(spreadsheet.tabnums.audit, 1);
+
+   spreadsheet.tabnums = {};
+   for (var i=0; i<spreadsheet.tabs.length; i++) {
+      spreadsheet.tabnums[spreadsheet.tabs[i].name] = i;
+      }
+
+   // Add Plain
+
+   spreadsheet.tabnums.plain = spreadsheet.tabs.length;
+   spreadsheet.tabs.push({name: "plain", text: "Plain", html:
+      '<div id="%id.plaintools" style="display:none;">'+
+      ' <div style="%tbt.">&nbsp;</div>'+
+      '</div>',
+      view: "plain",
+      onclick:
+         function(s, t) {
+            s.views.plain.element.innerHTML = s.CreateSheetHTML();
+            },
+      onclickFocus: true
+      });
+
+   spreadsheet.views["plain"] = {name: "plain",
+      divStyle: "border:1px solid black;overflow:auto;",
+      html: 'Plain View'
+      };
+
+   // Add Graph
+
+   spreadsheet.tabnums.graph = spreadsheet.tabs.length;
+   spreadsheet.tabs.push({name: "graph", text: "Graph", html:
+      '<div id="%id.graphtools" style="display:none;">'+
+      ' <div style="%tbt.">&nbsp;</div>'+
+      '</div>',
+      view: "graph",
+      onclick: DoGraph,
+      onclickFocus: true
+      });
+
+   spreadsheet.views["graph"] = {name: "graph", divStyle: "overflow:auto;", values: {},
+      oncreate: function(s, viewobj) {
+         var charttypes = "Horizontal Bar:barh|Vertical Bar:barv|Line:line|Area:area|Scatter:scatter";
+
+         viewobj.values.panel = {
+//            charttype: {setting: "charttype", type: "PopupList", id: s.idPrefix+"charttype",
+//               initialdata: charttypes},
+//            charttitle: {setting: "chartitle", type: "PopupList", id: s.idPrefix+"charttitle",
+//               initialdata: null}
+            };
+
+         SocialCalc.SettingsControlInitializePanel(viewobj.values.panel);
+         },
+      replacements: {
+         itemtitle: {regex: /\%itemtitle\./g, replacement: 'style="padding:12px 10px 0px 10px;font-weight:bold;text-align:right;vertical-align:top;font-size:small;"'},
+         sectiontitle: {regex: /\%sectiontitle\./g, replacement: 'style="padding:16px 10px 0px 0px;font-weight:bold;vertical-align:top;font-size:small;color:#C00;"'},
+         parttitle: {regex: /\%parttitle\./g, replacement: 'style="font-weight:bold;font-size:x-small;padding:0px 0px 3px 0px;"'},
+         itembody: {regex: /\%itembody\./g, replacement: 'style="padding:12px 0px 0px 0px;vertical-align:top;font-size:small;"'},
+         bodypart: {regex: /\%bodypart\./g, replacement: 'style="padding:0px 10px 0px 0px;font-size:small;vertical-align:top;"'}
+         },
+
+      html:
+'<div id="%id.c-colorchooser" style="display:none;position:absolute;z-index:20;"></div>'+
+'<table id="%id.chartsettingstable" style="display:none;" cellspacing="0" cellpadding="0">'+
+'<table cellspacing="0" cellpadding="0">'+
+'<tr>'+
+' <td %itemtitle.><br>Chart:</td>'+
+' <td %itembody.>'+
+'   <table cellspacing="0" cellpadding="0"><tr>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Type</div>'+
+'     <select size="1">'+
+'      <option>Horizontal Bar</option>'+
+'      <option>Vertical Bar</option>'+
+'      <option>Line</option>'+
+'      <option>Area</option>'+
+'      <option>Picture</option>'+
+'      <option>Circle</option>'+
+'      <option>Scatter Plot</option>'+
+'     </select>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Title</div>'+
+'     <input type="text" size="40" value="">'+
+'    </td>'+
+'   </tr></table>'+
+' </td>'+
+'</tr>'+
+'<tr>'+
+' <td %itemtitle.><br>X-Axis:</td>'+
+' <td %itembody.>'+
+'   <table cellspacing="0" cellpadding="0"><tr>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Labels</div>'+
+'     <select size="1"><option>A4</option><option>FIRST</option></select>'+
+'     <input type="button" value="&gt;">'+
+'     <input type="text" size="6" value="">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Minimum</div>'+
+'     <select size="1"><option>Default</option><option>Custom</option></select>'+
+'     <input type="text" size="4" value="">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Maximum</div>'+
+'     <select size="1"><option>Default</option><option>Custom</option></select>'+
+'     <input type="text" size="4" value="">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Name</div>'+
+'     <input type="text" size="20" value="">'+
+'    </td>'+
+'   </tr></table>'+
+' </td>'+
+'</tr>'+
+'<tr>'+
+' <td %itemtitle.><br>Y-Axis:</td>'+
+' <td %itembody.>'+
+'   <table cellspacing="0" cellpadding="0"><tr>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Minimum</div>'+
+'     <select size="1"><option>Default</option><option>Custom</option></select>'+
+'     <input type="text" size="4" value="">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Maximum</div>'+
+'     <select size="1"><option>Default</option><option>Custom</option></select>'+
+'     <input type="text" size="4" value="">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Name</div>'+
+'     <input type="text" size="20" value="">'+
+'    </td>'+
+'   </tr></table>'+
+' </td>'+
+'</tr>'+
+'<tr>'+
+' <td %itemtitle.><br>Series 1:</td>'+
+' <td %itembody.>'+
+'   <table cellspacing="0" cellpadding="0"><tr>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Data</div>'+
+'     <select size="1"><option>A4</option><option>FIRST</option></select>'+
+'     <input type="button" value="&gt;">'+
+'     <input type="text" size="6" value="">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Color</div>'+
+'     <input type="text" size="6" value="">'+
+'     <span style="border:1px solid black;">&nbsp;&nbsp;&nbsp</span>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Symbol</div>'+
+'     <select size="1"><option>None</option><option>Custom</option><option>Star</option><option>Box</option></select>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Name</div>'+
+'     <input type="text" size="10" value="">'+
+'    </td>'+
+'   </tr></table>'+
+' </td>'+
+'</tr>'+
+'<tr>'+
+' <td %itemtitle.><br>Series 2:</td>'+
+' <td %itembody.>'+
+'   <table cellspacing="0" cellpadding="0"><tr>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Data</div>'+
+'     <select size="1"><option>A4</option><option>FIRST</option><option>[Blank]</option></select>'+
+'     <input type="button" value="&gt;">'+
+'     <input type="text" size="6" value="None">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Color</div>'+
+'     <input type="text" size="6" value="">'+
+'     <span style="border:1px solid black;">&nbsp;&nbsp;&nbsp</span>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Symbol</div>'+
+'     <select size="1"><option>None</option><option>Custom</option><option>Star</option><option>Box</option></select>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Name</div>'+
+'     <input type="text" size="10" value="">'+
+'    </td>'+
+'   </tr></table>'+
+' </td>'+
+'</tr>'+
+'<tr>'+
+' <td %itemtitle.><br>Series 3:</td>'+
+' <td %itembody.>'+
+'   <table cellspacing="0" cellpadding="0"><tr>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Data</div>'+
+'     <select size="1"><option>A4</option><option>FIRST</option><option>None</option></select>'+
+'     <input type="button" value="&gt;">'+
+'     <input type="text" size="6" value="None">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Color</div>'+
+'     <input type="text" size="6" value="">'+
+'     <span style="border:1px solid black;">&nbsp;&nbsp;&nbsp</span>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Symbol</div>'+
+'     <select size="1"><option>None</option><option>Custom</option><option>Star</option><option>Box</option></select>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Name</div>'+
+'     <input type="text" size="10" value="">'+
+'    </td>'+
+'   </tr></table>'+
+' </td>'+
+'</tr>'+
+'<tr>'+
+' <td %itemtitle.><br>Series 4:</td>'+
+' <td %itembody.>'+
+'   <table cellspacing="0" cellpadding="0"><tr>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Data</div>'+
+'     <select size="1"><option>A4</option><option>FIRST</option><option>None</option></select>'+
+'     <input type="button" value="&gt;">'+
+'     <input type="text" size="6" value="None">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Color</div>'+
+'     <input type="text" size="6" value="">'+
+'     <span style="border:1px solid black;">&nbsp;&nbsp;&nbsp</span>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Symbol</div>'+
+'     <select size="1"><option>None</option><option>Custom</option><option>Star</option><option>Box</option></select>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Name</div>'+
+'     <input type="text" size="10" value="">'+
+'    </td>'+
+'   </tr></table>'+
+' </td>'+
+'</tr>'+
+'<tr>'+
+' <td %itemtitle.><br>Series 5:</td>'+
+' <td %itembody.>'+
+'   <table cellspacing="0" cellpadding="0"><tr>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Data</div>'+
+'     <select size="1"><option>A4</option><option>FIRST</option><option>None</option></select>'+
+'     <input type="button" value="&gt;">'+
+'     <input type="text" size="6" value="None">'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Color</div>'+
+'     <input type="text" size="6" value="">'+
+'     <span style="border:1px solid black;">&nbsp;&nbsp;&nbsp</span>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Symbol</div>'+
+'     <select size="1"><option>None</option><option>Custom</option><option>Star</option><option>Box</option></select>'+
+'    </td>'+
+'    <td %bodypart.>'+
+'     <div %parttitle.>Name</div>'+
+'     <input type="text" size="10" value="">'+
+'    </td>'+
+'   </tr></table>'+
+' </td>'+
+'</tr>'+
+'</table>'
+      };
+
+   // Add Help
+
+   spreadsheet.tabnums.help = spreadsheet.tabs.length;
+   spreadsheet.tabs.push({name: "help", text: "Help", html:
+      '<div id="%id.helptools" style="display:none;">'+
+      ' <div style="%tbt.">&nbsp;</div>'+
+      '</div>',
+      view: "help",
+      onclick: DoHelp,
+      onclickFocus: true
+      });
+
+   spreadsheet.views["help"] = {name: "help",
+      divStyle: "border:1px solid black;overflow:auto;",
+      html: '<div style="padding:6px;">Help View</div>'
+      };
+
+   // Initialize the Spreadsheet Control and display it
+
+   spreadsheet.InitializeSpreadsheetControl("tableeditor");
+   spreadsheet.ExecuteCommand('redisplay', '');
+
+   // Done initialization
+
 //
-// OLPC SocialCalc Constants
-//
-//////////////////////////////
-
-// 
-// How to localize these for the OLPC/Sugar version:
-//
-// Move these constants into socialcalcconstants.js, along with any others you may want to
-// add for the OLPC version.
-// To let this run standalone with the original English text, with unmodified "standard" SocialCalc socialcalcconstants.js,
-// these appear here in this file.
+// * * * FUNCTIONS * * *
 //
 
-   SocialCalc.Constants.AllowCtrlS = false; // OLPC doesn't need this and ctrl-s is used for other purposes
+//
+// Example of how to get the serialized data
+//
 
-   SocialCalc.Constants.s_loc_plain = "Plain";
-   SocialCalc.Constants.s_loc_graph = "Graph";
-   SocialCalc.Constants.s_loc_cells_to_graph = "Cells to Graph";
-   SocialCalc.Constants.s_loc_set_cells_to_graph = "Set Cells To Graph";
-   SocialCalc.Constants.s_loc_graph_type = "Graph Type";
-   SocialCalc.Constants.s_loc_help = "Help";
-   SocialCalc.Constants.s_loc_horizontal_bar = "Horizontal Bar";
-   SocialCalc.Constants.s_loc_not_set = "Not Set";
-   SocialCalc.Constants.s_loc_unknown_range_name = "Unknown range name";
-   SocialCalc.Constants.s_loc_hide_help = "Hide Help";
+function dosave() {
+   savestr = spreadsheet.CreateSpreadsheetSave();
+   }
 
-   SocialCalc.Constants.s_GraphRangeNotSelected = 'Select a range of cells with numeric values to graph '+
-            'and use the OK button above to set the range as the graph range.';
+//
+// Example of how to reload the serialized data
+//
+// Don't do this when a command or displaying is being executed. It wipes out the sheet without checking.
+// (If you do this on an initial load, skip the 'redisplay' above.)
+//
 
-   SocialCalc.Constants.s_MainHelpText =
-'<b>HELP TEXT FOLLOWED BY ABOUT TEXT AND LEGAL INFORMATION:</b><br><br> '+
-'Version 0.9.1<br><br> '+
-'<i>This is a spreadsheet built on SocialCalc JavaScript code. '+
+function doreload() {
+
+   var parts = spreadsheet.DecodeSpreadsheetSave(savestr);
+   if (parts) {
+      if (parts.sheet) {
+         spreadsheet.sheet.ResetSheet();
+         spreadsheet.ParseSheetSave(savestr.value.substring(parts.sheet.start, parts.sheet.end));
+         }
+      if (parts.edit) {
+         spreadsheet.editor.LoadEditorSettings(savestr.value.substring(parts.edit.start, parts.edit.end));
+         }
+      }
+   if (spreadsheet.editor.context.sheetobj.attribs.recalc=="off") {
+      spreadsheet.ExecuteCommand('redisplay', '');
+      }
+   else {
+      spreadsheet.ExecuteCommand('recalc', '');
+      }
+   }
+
+// This is just as a demo to show we might have graphing someday. It may be better to have it
+// in a different activity.
+
+function DoGraph(objs, t) {
+
+   var maxheight, totalwidth, color, nitems, byrow, maxval, minval, i, cr, cr1, cell, val, extra, eachwidth, str, thisbar;
+   var values = [];
+   var labels = [];
+   var range = objs.editor.range;
+
+   var gview = objs.views.graph.element;
+
+   if (!range.hasrange) {
+      gview.innerHTML = '<div style="padding:30px;font-weight:bold;">Select a range of cells with numeric values to graph.</div>';
+      return;
+      }
+   if (range.left==range.right) { // down
+      nitems = range.bottom - range.top + 1;
+      byrow = true;
+      }
+   else {
+      nitems = range.right - range.left + 1;
+      byrow = false;
+      }
+
+   str = "";
+
+   maxheight = (objs.height-objs.nonviewheight)-50;
+   totalwidth = objs.width-30;
+   color = "#666";
+
+   minval = null;
+   maxval = null;
+
+   for (i=0; i<nitems; i++) {
+      cr = byrow ? SocialCalc.rcColname(range.left)+(i+range.top) : SocialCalc.rcColname(i+range.left)+range.top;
+      cr1 = byrow ? SocialCalc.rcColname(range.left-1 || 1)+(i+range.top) : SocialCalc.rcColname(i+range.left)+(range.top-1 || 1);
+      cell = objs.sheet.GetAssuredCell(cr);
+      if (cell.valuetype.charAt(0) == "n") {
+         val = cell.datavalue - 0;
+         if (maxval==null || maxval<val) maxval = val;
+         if (minval==null || minval>val) minval = val;
+         values.push(val);
+         cell = objs.sheet.GetAssuredCell(cr1);
+         if ((range.right==range.left || range.top==range.bottom) && (cell.valuetype.charAt(0) == "t" || cell.valuetype.charAt(0) == "n")) {
+            labels.push(cell.datavalue+"");
+            }
+         else {
+            labels.push(cr);
+            }
+         }
+      }
+
+   extra = (maxval-minval)*0.1;
+   minval = minval - (extra || 1);
+   eachwidth = Math.floor(totalwidth / (values.length || 1))-4 || 1;
+
+   str += '<table cellspacing="0" cellpadding="0" width="'+totalwidth+'"><tr>';
+
+   for (i=0; i<values.length; i++) {
+      thisbar = Math.floor((values[i]-minval)*maxheight/(maxval-minval || 1))+1;
+      val = (values[i]+"").substring(0,7);
+      str += '<td valign="bottom" style="padding-right:4px;"><table cellspacing="0" cellpadding="0" width="'+eachwidth+'">';
+      str += '<tr><td align="center" style="font-size:7pt;">'+val+'</td></tr>';
+      str += '<tr><td><div style="height:'+thisbar+'px;background-color:'+color+';width:100%">&nbsp;</div></td></tr>';
+      str += '</table></td>';
+      }
+   str += "</tr><tr>";
+   for (i=0; i<values.length; i++) {
+      str += '<td align="center" valign="top" style="font-size:8pt;font-weight:bold;padding-top:6px;">'+labels[i]+'</td>';
+      }
+   str += "</tr></table>";
+
+   gview.innerHTML = str;
+
+   }
+
+// This is where loading help text might go:
+
+function DoHelp(s, t) {
+
+   var hview = s.views.help.element;
+
+   var str =
+'HELP TEXT FOLLOWED BY ABOUT TEXT AND LEGAL INFORMATION:<br><br> '+
+'Version 0.7.10<br><br> '+
+'<i>This is an early version of a spreadsheet built on SocialCalc JavaScript code, still in development. '+
 '</i> '+
 '<br><br> '+
 'You can use the arrow keys and mouse to select cells in a manner similar to traditional spreadsheets. '+
@@ -77,6 +469,7 @@ function setmsg(str) {document.getElementById("msg").innerHTML = str;}
 'that let you "lock" the upper rows or columns to facilitate keeping column and row headers visible when scrolling. '+
 '<br><br> '+
 'You can type values in cells. '+
+'An input box will pop up. It may be moved by dragging the top of the box. '+
 'Press Enter, use an arrow key, or click on a cell to finish. '+
 'If you are in a partial formula (e.g., "=1+" or "=SUM(") an arrow key or cell click will '+
 'insert the name of the newly selected cell into the formula, similar to a traditional spreadsheet. '+
@@ -86,15 +479,15 @@ function setmsg(str) {document.getElementById("msg").innerHTML = str;}
 'to distinguish it from numbers), dates (e.g., "1/2/3"), dollars ("$1,234.50"), time ("3:45"), '+
 'numbers with fractions ("1 1/2"), and "true", "false", and "#N/A". '+
 'A value\'s type determines its displayed format if there is no explicit numeric format set for a cell. '+
-'The program supports a wide variety of formats (including other currencies) through its custom format functionality '+
-'available on the Format tab. '+
+'The program supports a wide variety of formats (including other currencies) through its custom format functionality, '+
+'but this early release only has several that are hardcoded in for you to select from the UI. '+
 '<br><br> '+
 'Use the Esc key to cancel during edits. '+
 'The Del key deletes the values of the selected cell(s). '+
 '<br><br> '+
 'The 109 formula functions that the June 2007 Open Document Format "Open Formula" specification  '+
 'calls the "small group" are available. '+
-'(<b><i>A simple reference to all of the functions is provided when you click the "f()" button on the formula bar.</i></b>) '+
+'(<b><i>A simple reference to all of the functions is provided below.</i></b>) '+
 'The specification says that: "This group includes approximately 100 functions,  '+
 'and includes the basic functions that are very widely implemented in spreadsheet applications,  '+
 'even in resource-constrained environments."<br><br> '+
@@ -103,11 +496,11 @@ function setmsg(str) {document.getElementById("msg").innerHTML = str;}
 'You can, for example, have a function like IF(B10=B3, "Yes", "No"), where B10 and B3 may contain text values '+
 '(comparisons are not case-sensitive). '+
 '<br><br> '+
-'This release has an HTML version of an editing interface. Most buttons on the toolbar display tooltips when you point to them with the mouse pointer. '+
+'This release has an early HTML version of an editing interface. '+
+'There is a simple Sugar-like interface for accessing some of the editing API through tabs, buttons, and drop downs. '+
 '<br><br> '+
 'The program maintains an undo stack accessed through the Undo and Redo buttons on the left of the Edit tab toolbar. '+
-'Right now the stack saves up to 50 steps for undoing. '+
-'The Ctrl-Z key may be used as a shortcut instead of the Undo button. '+
+'Right now the stack saves up to 100 steps. '+
 '<br><br> '+
 'There is a <b>Format</b> tab for accessing all of the format settings, both for individual cells as well '+
 'as for the sheet-wide defaults that are applied to cells without explicit settings for that attribute. '+
@@ -124,19 +517,21 @@ function setmsg(str) {document.getElementById("msg").innerHTML = str;}
 '<br><br> '+
 'The <b>Name</b> tab lets you set named ranges that may be used in formulas.'+
 '<br><br> '+
-'The <b>Graph</b> tab displays a graph representation of selected cells. It has its own Help button. '+
+'The <b>Graph</b> tab displays a very simple bar graph representation of the cells currently selected as a range '+
+'(either in a single row across or column down). '+
+'If the range is a single row or column, and if the row above (or column to the left) has values, those values are used as labels. '+
+'Otherwise the cell coordinates are used (e.g., B5). '+
+'This is a very early, minimal implementation. '+
 '<br><br> '+
 'The <b>Plain</b> tab shows the sheet rendered without the grid or editing controls. '+
 '<br><br> '+
 'The <b>Clipboard</b> tab lets you view the SocialCalc clipboard in tab-delimited format, and optionally reload it with new data. '+
-'Tab-delimited format is what some browsers and Excel put on the clipboard when you select and then copy cells in a table. '+
+'Tab-delimited format is what a browser and Excel put on the clipboard when you select and then copy cells in a table. '+
 'The Clipboard tab also supports CSV format and the SocialCalc Save format (useful for copying from one sheet to another). '+
-'Reloading from the SocialCalc Save format must be in correct format -- errors can cause SocialCalc to behave badly.<br><br>'+
+'Reloading from the SocialCalc Save format must be in correct format -- errors can cause SocialCalc to behave badly. '+
 'Pressing Ctrl-V when on the Edit tab and not editing a cell assumes that Tab-delimited data is on the regular '+
 'clipboard, loads it into the SocialCalc clipboard, and then "pastes" it starting at the current cell. '+
 'This is an easy way to copy data from a web page into a spreadsheet. '+
-'Similarly, Ctrl-C loads the SocialCalc clipboard and the system clipboard. '+
-'Ctrl-V differs from the Paste button in that it only pastes values and formulas, and not formats. '+
 '<br><br> '+
 'Right now this code is mainly being developed to run under control of a native Python '+
 'application running on the OLPC XO. '+
@@ -344,7 +739,7 @@ function setmsg(str) {document.getElementById("msg").innerHTML = str;}
 'the Sugar environment.<br><br> '+
 'For more information, see the Software Garden OLPC Home Page (www.peapodcast.com/sgi/olpc).</i> '+
 '<br><br> '+
-'(c) Copyright 2009 Socialtext, Inc.<br> '+
+'(c) Copyright 2008 Socialtext, Inc.<br> '+
 'All Rights Reserved. '+
 '<br><br> '+
 'This product consists of components licensed under different licenses. '+
@@ -380,475 +775,6 @@ function setmsg(str) {document.getElementById("msg").innerHTML = str;}
 '<span class="smaller">wikiCalc, Garden, and Software Garden are registered trademarks of Software Garden, Inc.<br> '+
 'Socialtext, SocialCalc, and the Socialtext logo and Dreamcatcher are trademarks of Socialtext, Inc.<br> '+
 'Dan Bricklin\'s is a registered trademark of Daniel Bricklin.</span>';
-
-/////////////////////////////
-
-   // Make socialcalcpopup.js localizable (it doesn't assume SocialCalc.Constants)
-
-   SocialCalc.Popup.LocalizeString = SocialCalc.LocalizeString;
-
-   // Create the spreadsheet control, but don't initialize yet
-
-   var spreadsheet = new SocialCalc.SpreadsheetControl();
-   var savestr = "";
-
-   // Set up the tabs we want
-
-   // Remove Audit
-
-   spreadsheet.tabs.splice(spreadsheet.tabnums.audit, 1);
-
-   spreadsheet.tabnums = {};
-   for (var i=0; i<spreadsheet.tabs.length; i++) {
-      spreadsheet.tabnums[spreadsheet.tabs[i].name] = i;
-      }
-
-   // Add Plain
-
-   spreadsheet.tabnums.plain = spreadsheet.tabs.length;
-   spreadsheet.tabs.push({name: "plain", text: "Plain", html:
-      '<div id="%id.plaintools" style="display:none;">'+
-      ' <div style="%tbt.">&nbsp;</div>'+
-      '</div>',
-      view: "plain",
-      onclick:
-         function(s, t) {
-            s.views.plain.element.innerHTML = s.CreateSheetHTML();
-            },
-      onclickFocus: true
-      });
-
-   spreadsheet.views["plain"] = {name: "plain",
-      divStyle: "border:1px solid black;overflow:auto;",
-      html: 'Plain View'
-      };
-
-   // Add Graph
-
-   spreadsheet.tabnums.graph = spreadsheet.tabs.length;
-   spreadsheet.tabs.push({name: "graph", text: "Graph", html:
-      '<div id="%id.graphtools" style="display:none;">'+
-      ' <div style="%tbt.">'+
-      ' <table cellspacing="0" cellpadding="0"><tr>'+
-      '   <td style="vertical-align:middle;padding-right:32px;padding-left:16px;">'+
-      '    <div style="%tbt.">%loc!Cells to Graph!</div>'+
-      '    <div id="%id.graphrange" style="font-weight:bold;">%loc!Not Set!</div>'+
-      '   </td>'+
-      '  <td style="vertical-align:top;padding-right:32px;">'+
-      '   <div style="%tbt.">%loc!Set Cells To Graph!</div>'+
-      '    <select id="%id.graphlist" size="1" onfocus="%s.CmdGotFocus(this);"><option selected>%loc![select range]!</option></select>'+
-      '    <input type="button" value="%loc!OK!" onclick="GraphSetCells();" style="font-size:x-small;">'+
-      '   </td>'+
-      '   <td style="vertical-align:middle;padding-right:4px;">'+
-      '    <div style="%tbt.">%loc!Graph Type!</div>'+
-      '     <select id="%id.graphtype" size="1" onchange="GraphChanged(this);" onfocus="%s.CmdGotFocus(this);"></select>'+
-      '    </div>'+
-      '   </td>'+
-      '   <td style="vertical-align:middle;padding-right:16px;">'+
-      '    <div style="%tbt.">&nbsp;</div>'+
-      '     <input id="%id.graphhelp" type="button" onclick="DoGraph(true);" value="%loc!Help!" style="font-size:x-small;">'+
-      '    </div>'+
-      '   </td>'+
-      '  </tr></table>'+
-      ' </div>'+
-      '</div>',
-      view: "graph",
-      onclick: GraphOnClick,
-      onclickFocus: true
-      });
-
-   spreadsheet.views["graph"] = {name: "graph", divStyle: "overflow:auto;", values: {},
-      html: '<div style="padding:6px;">Graph View</div>'
-      };
-
-   spreadsheet.editor.SettingsCallbacks.graph = {save: GraphSave, load: GraphLoad};
-
-   // Add Help
-
-   spreadsheet.tabnums.help = spreadsheet.tabs.length;
-   spreadsheet.tabs.push({name: "help", text: "Help", html:
-      '<div id="%id.helptools" style="display:none;">'+
-      ' <div style="%tbt.">&nbsp;</div>'+
-      '</div>',
-      view: "help",
-      onclick: DoHelp,
-      onclickFocus: true
-      });
-
-   spreadsheet.views["help"] = {name: "help",
-      divStyle: "border:1px solid black;overflow:auto;",
-      html: '<div style="padding:6px;">Help View</div>'
-      };
-
-   // Initialize the Spreadsheet Control and display it
-
-   spreadsheet.InitializeSpreadsheetControl("tableeditor");
-   spreadsheet.ExecuteCommand('redisplay', '');
-
-   // Done initialization
-
-//
-// * * * FUNCTIONS * * *
-//
-
-//
-// Example of how to get the serialized data
-//
-
-function dosave() {
-   savestr = spreadsheet.CreateSpreadsheetSave();
-   }
-
-//
-// Example of how to reload the serialized data
-//
-// Don't do this when a command or displaying is being executed. It wipes out the sheet without checking.
-// (If you do this on an initial load, skip the 'redisplay' above.)
-//
-
-function doreload() {
-
-   var parts = spreadsheet.DecodeSpreadsheetSave(savestr);
-   if (parts) {
-      if (parts.sheet) {
-         spreadsheet.sheet.ResetSheet();
-         spreadsheet.ParseSheetSave(savestr.substring(parts.sheet.start, parts.sheet.end));
-         }
-      if (parts.edit) {
-         spreadsheet.editor.LoadEditorSettings(savestr.substring(parts.edit.start, parts.edit.end));
-         }
-      }
-   if (spreadsheet.editor.context.sheetobj.attribs.recalc=="off") {
-      spreadsheet.ExecuteCommand('redisplay', '');
-      }
-   else {
-      spreadsheet.ExecuteCommand('recalc', '');
-      }
-   }
-
-// * * * * * * * * * *
-//
-// Graphing Framework
-//
-// * * * * * * * * * *
-
-//
-// To add a new graph type, add it's short name to the SocialCalc.GraphTypesInfo.displayorder array
-// in the order you wish the types to appear and add an item with its display text
-// and the function to call to implement it.
-//
-// To make them localizable, make sure that there is a "s_loc_lowercase_name" constant in
-// socialcalcconstants.js for each display name, as well as any strings it uses.
-// In this sample, only the "Hide Help" button names are localized. The help
-// text itself is not. You'd probably want some mechanism for that.
-//
-
-SocialCalc.GraphTypesInfo = {
-
-   displayorder: ["horizontalbar"],
-
-   horizontalbar: {display: "Horizontal Bar", func: GraphFunctionBarSample}
-
-   };
-
-function GraphOnClick(s, t) {
-
-   var SCLoc = SocialCalc.LocalizeString;
-
-   var name, i;
-   var namelist = [];
-   var nl = document.getElementById(s.idPrefix+"graphlist");
-   s.editor.RangeChangeCallback.graph = UpdateGraphRangeProposal;
-
-   for (name in s.sheet.names) {
-      namelist.push(name);
-      }
-   namelist.sort();
-   nl.length = 0;
-   nl.options[0] = new Option(SCLoc("[select range]"));
-   for (i=0; i<namelist.length; i++) {
-      name = namelist[i];
-      nl.options[i+1] = new Option(name, name);
-      if (name == s.graphrange) {
-         nl.options[i+1].selected = true;
-         }
-      }
-   if (s.graphrange == "") {
-      nl.options[0].selected = true;
-      }
-
-   UpdateGraphRangeProposal(s.editor);
-
-   nl = document.getElementById(s.idPrefix+"graphtype");
-   nl.length = 0;
-   for (i=0; i<SocialCalc.GraphTypesInfo.displayorder.length; i++) {
-      name = SocialCalc.GraphTypesInfo.displayorder[i];
-      nl.options[i] = new Option(SCLoc(SocialCalc.GraphTypesInfo[name].display), name);
-      if (name == s.graphtype) {
-         nl.options[i].selected = true;
-         }
-      }
-   if (!s.graphtype) {
-      nl.options[0].selected = true;
-      s.graphtype = nl.options[0].value;
-      }
-
-   SocialCalc.KeyboardFocus();
-
-   DoGraph(false);
-
-   return;
-
-   }
-
-function UpdateGraphRangeProposal(editor) {
-
-   var ele = document.getElementById(SocialCalc.GetSpreadsheetControlObject().idPrefix+"graphlist");
-   if (editor.range.hasrange) {
-      ele.options[0].text = SocialCalc.crToCoord(editor.range.left, editor.range.top) + ":" +
-                            SocialCalc.crToCoord(editor.range.right, editor.range.bottom);
-      }
-   else {
-      ele.options[0].text = SocialCalc.LocalizeString("[select range]");
-      }
-
-   }
-
-function GraphSetCells() {
-
-   var lele, ele;
-   var spreadsheet = SocialCalc.GetSpreadsheetControlObject();
-   var editor = spreadsheet.editor;
-
-   lele = document.getElementById(spreadsheet.idPrefix+"graphlist");
-   if (lele.selectedIndex==0) {
-      if (editor.range.hasrange) {
-         spreadsheet.graphrange = SocialCalc.crToCoord(editor.range.left, editor.range.top) + ":" +
-                    SocialCalc.crToCoord(editor.range.right, editor.range.bottom);
-         }
-      else {
-         spreadsheet.graphrange = editor.ecell.coord+":"+editor.ecell.coord;
-         }
-      }
-   else {
-      spreadsheet.graphrange = lele.options[lele.selectedIndex].value;
-      }
-   ele = document.getElementById(spreadsheet.idPrefix+"graphrange");
-   ele.innerHTML = spreadsheet.graphrange;
-   SocialCalc.KeyboardFocus();
-
-   DoGraph(false);
-
-   return;
-
-   }
-
-function DoGraph(helpflag) {
-
-   var spreadsheet = SocialCalc.GetSpreadsheetControlObject();
-   var editor = spreadsheet.editor;
-
-   var gview = spreadsheet.views.graph.element;
-
-   var ginfo = SocialCalc.GraphTypesInfo[spreadsheet.graphtype];
-
-   var gfunc = ginfo.func;
-
-   if (!spreadsheet.graphrange) {
-      if (gfunc && helpflag) {
-         gfunc(spreadsheet, null, gview, spreadsheet.graphtype, helpflag);
-         }
-      else {
-         gview.innerHTML = '<div style="padding:30px;font-weight:bold;">'+SocialCalc.Constants.s_GraphRangeNotSelected+'</div>';
-         }
-      return;
-      }
-
-   var grange = spreadsheet.graphrange;
-   var nrange, rparts;
-
-   if (grange && grange.indexOf(":")==-1) { // graphing range is a named range
-      nrange = SocialCalc.Formula.LookupName(spreadsheet.sheet, grange || "");
-      if (nrange.type != "range") {
-         gview.innerHTML = SocialCalc.LocalizeString("Unknown range name")+": "+grange;
-         return;
-         }
-      rparts = nrange.value.match(/^(.*)\|(.*)\|$/);
-      grange = rparts[1] + ":" + rparts[2];
-      }
-
-   var prange = SocialCalc.ParseRange(grange);
-   var range = {};
-   if (prange.cr1.col <= prange.cr2.col) {
-      range.left = prange.cr1.col;
-      range.right = prange.cr2.col;
-      }
-   else {
-      range.left = prange.cr2.col;
-      range.right = prange.cr1.col;
-      }
-   if (prange.cr1.row <= prange.cr2.row) {
-      range.top = prange.cr1.row;
-      range.bottom = prange.cr2.row;
-      }
-   else {
-      range.top = prange.cr2.row;
-      range.bottom = prange.cr1.row;
-      }
-
-   if (gfunc) {
-      gfunc(spreadsheet, range, gview, spreadsheet.graphtype, helpflag);
-      }
-
-   return;
-
-   }
-
-
-function GraphChanged(gtobj) {
-
-   var spreadsheet = SocialCalc.GetSpreadsheetControlObject();
-
-   spreadsheet.graphtype = gtobj.options[gtobj.selectedIndex].value;
-
-   DoGraph(false);
-
-   }
-
-function GraphSave(editor, setting) {
-   // Format is:
-   //    sort:range:sortrange:type:sorttype
-
-   var spreadsheet = SocialCalc.GetSpreadsheetControlObject();
-   var gtype = spreadsheet.graphtype || "";
-
-   var str = "graph:range:"+SocialCalc.encodeForSave(spreadsheet.graphrange)+":type:"+SocialCalc.encodeForSave(gtype)+"\n";
-
-   return str;
-
-   }
-
-
-function GraphLoad(editor, setting, line, flags) {
-
-   var spreadsheet = SocialCalc.GetSpreadsheetControlObject();
-   var parts, i;
-
-   parts = line.split(":");
-
-   for (i=1; i<parts.length; i+=2) {
-      switch (parts[i]) {
-         case "range":
-            spreadsheet.graphrange = SocialCalc.decodeFromSave(parts[i+1]);
-            break;
-         case "type":
-            spreadsheet.graphtype = SocialCalc.decodeFromSave(parts[i+1]);
-            break;
-         }
-      }
-
-   return true;
-
-   }
-
-
-//
-// Graphing Functions are called with (spreadsheet, range, gview, gtype, helpflag)
-//
-
-// This is a sample graphing function to show how it interfaces to the rest of the system.
-
-function GraphFunctionBarSample(spreadsheet, range, gview, gtype, helpflag) {
-
-   var maxheight, totalwidth, color, nitems, byrow, maxval, minval, i, cr, cr1, cell, val, extra, eachwidth, str, thisbar;
-   var values = [];
-   var labels = [];
-
-   if (helpflag || !range) {
-      str = '<input type="button" value="%loc!Hide Help!" onclick="DoGraph(false);"><br><br>'+
-        'This is the help text for graph type: '+SocialCalc.GraphTypesInfo[gtype].display+'.<br><br>'+
-        'The <b>Graph</b> tab displays a very simple bar graph representation of the cells currently selected as a range to graph '+
-        '(either in a single row across or column down). '+
-        'If the range is a single row or column, and if the row above (or column to the left) has values, those values are used as labels. '+
-        'Otherwise the cell coordinates are used (e.g., B5). '+
-        'This is a very early, minimal implementation for demonstration purposes. '+
-         '<br><br><input type="button" value="%loc!Hide Help!" onclick="DoGraph(false);">';
-
-      str = SocialCalc.LocalizeSubstrings(str);
-
-      gview.innerHTML = str;
-
-      return;
-      }
-
-   if (range.left==range.right) { // down
-      nitems = range.bottom - range.top + 1;
-      byrow = true;
-      }
-   else {
-      nitems = range.right - range.left + 1;
-      byrow = false;
-      }
-
-   str = "";
-
-   maxheight = (spreadsheet.height-spreadsheet.nonviewheight)-50;
-   totalwidth = spreadsheet.width-30;
-   color = "#666";
-
-   minval = null;
-   maxval = null;
-
-   for (i=0; i<nitems; i++) {
-      cr = byrow ? SocialCalc.rcColname(range.left)+(i+range.top) : SocialCalc.rcColname(i+range.left)+range.top;
-      cr1 = byrow ? SocialCalc.rcColname(range.left-1 || 1)+(i+range.top) : SocialCalc.rcColname(i+range.left)+(range.top-1 || 1);
-      cell = spreadsheet.sheet.GetAssuredCell(cr);
-      if (cell.valuetype.charAt(0) == "n") {
-         val = cell.datavalue - 0;
-         if (maxval==null || maxval<val) maxval = val;
-         if (minval==null || minval>val) minval = val;
-         values.push(val);
-         cell = spreadsheet.sheet.GetAssuredCell(cr1);
-         if ((range.right==range.left || range.top==range.bottom) && (cell.valuetype.charAt(0) == "t" || cell.valuetype.charAt(0) == "n")) {
-            labels.push(cell.datavalue+"");
-            }
-         else {
-            labels.push(cr);
-            }
-         }
-      }
-
-   extra = (maxval-minval)*0.1;
-   minval = minval - (extra || 1);
-   eachwidth = Math.floor(totalwidth / (values.length || 1))-4 || 1;
-
-   str += '<table cellspacing="0" cellpadding="0" width="'+totalwidth+'"><tr>';
-
-   for (i=0; i<values.length; i++) {
-      thisbar = Math.floor((values[i]-minval)*maxheight/(maxval-minval || 1))+1;
-      val = (values[i]+"").substring(0,7);
-      str += '<td valign="bottom" style="padding-right:4px;"><table cellspacing="0" cellpadding="0" width="'+eachwidth+'">';
-      str += '<tr><td align="center" style="font-size:7pt;">'+val+'</td></tr>';
-      str += '<tr><td><div style="height:'+thisbar+'px;background-color:'+color+';width:100%">&nbsp;</div></td></tr>';
-      str += '</table></td>';
-      }
-   str += "</tr><tr>";
-   for (i=0; i<values.length; i++) {
-      str += '<td align="center" valign="top" style="font-size:8pt;font-weight:bold;padding-top:6px;">'+labels[i]+'</td>';
-      }
-   str += "</tr></table>";
-
-   gview.innerHTML = str;
-
-   }
-
-// This is where loading help text might go:
-
-function DoHelp(s, t) {
-
-   var hview = s.views.help.element;
-
-   var str = SocialCalc.Constants.s_MainHelpText;
 
    hview.firstChild.innerHTML = str;
 

@@ -3,7 +3,7 @@
 // The module of the SocialCalc package with customizable constants, strings, etc.
 // This is where most of the common localizations are done.
 //
-// (c) Copyright 2008, 2009 Socialtext, Inc.
+// (c) Copyright 2008, 2009, 2010 Socialtext, Inc.
 // All Rights Reserved.
 //
 // The contents of this file are subject to the Artistic License 2.0; you may not
@@ -180,9 +180,8 @@ SocialCalc.Constants = {
 
    //*** SocialCalc.TableEditor
 
-   //defaultImagePrefix [CHANGED FOR WEBAPP]
+   // [CHANGED FOR WEBAPP]
    defaultImagePrefix: site_root_path+"_lib/spreadsheets/images/sc-", // URL prefix for images (e.g., "/images/sc")
-   
    defaultTableEditorIDPrefix: "te_", // if present, many TableEditor elements are assigned IDs with this prefix
    defaultPageUpDnAmount: 15, // number of rows to move cursor on PgUp/PgDn keys (numeric)
 
@@ -225,6 +224,22 @@ SocialCalc.Constants = {
 
    ietUnknownFunction: "Unknown function ", // displayed when typing "=unknown("
 
+   //** SocialCalc.CellHandles
+
+   CH_radius1: 29.0, // extent of inner circle within 90px image
+   CH_radius2: 41.0, // extent of outer circle within 90px image
+   s_CHfillAllTooltip: "Fill Contents and Formats Down/Right", // tooltip for fill all handle
+   s_CHfillContentsTooltip: "Fill Contents Only Down/Right", // tooltip for fill formulas handle
+   s_CHmovePasteAllTooltip: "Move Contents and Formats", // etc.
+   s_CHmovePasteContentsTooltip: "Move Contents Only",
+   s_CHmoveInsertAllTooltip: "Slide Contents and Formats within Row/Col",
+   s_CHmoveInsertContentsTooltip: "Slide Contents within Row/Col",
+   s_CHindicatorOperationLookup: {"Fill": "Fill", "FillC": "Fill Contents",
+                                  "Move": "Move", "MoveI": "Slide", 
+                                  "MoveC": "Move Contents", "MoveIC": "Slide Contents"}, // short form of operation to follow drag
+   s_CHindicatorDirectionLookup: {"Down": " Down", "Right": " Right",
+                                  "Horizontal": " Horizontal", "Vertical": " Vertical"}, // direction that modifies operation during drag
+
    //*** SocialCalc.TableControl
 
    defaultTCSliderThickness: 9, // length of pane slider (numeric in pixels)
@@ -243,12 +258,12 @@ SocialCalc.Constants = {
    s_panesliderTooltipv: "Drag to lock pane horizontally",
    TClessbuttonStyle: "backgroundColor:#AAA;",
    TClessbuttonClass: "",
-   TClessbuttonRepeatWait: 500, // in milliseconds
-   TClessbuttonRepeatInterval: 100, // in milliseconds
+   TClessbuttonRepeatWait: 300, // in milliseconds
+   TClessbuttonRepeatInterval: 20,//100, // in milliseconds
    TCmorebuttonStyle: "backgroundColor:#AAA;",
    TCmorebuttonClass: "",
-   TCmorebuttonRepeatWait: 500, // in milliseconds
-   TCmorebuttonRepeatInterval: 100, // in milliseconds
+   TCmorebuttonRepeatWait: 300, // in milliseconds
+   TCmorebuttonRepeatInterval: 20,//100, // in milliseconds
    TCscrollareaStyle: "backgroundColor:#DDD;",
    TCscrollareaClass: "",
    TCscrollareaRepeatWait: 500, // in milliseconds
@@ -338,7 +353,7 @@ SocialCalc.Constants = {
             "[break]:|1\\c23:h:mm|1\\c23 PM:h:mm AM/PM|1\\c23\\c45:h:mm:ss|01\\c23\\c45:hh:mm:ss|26\\c23 (h\\cm):[hh]:mm|69\\c45 (m\\cs):[mm]:ss|69 (s):[ss]|"+
             "[newcol]:|2006-01-04 01\\c23\\c45:yyyy-mm-dd hh:mm:ss|January 4, 2006:mmmm d, yyyy hh:mm:ss|Wed:ddd|Wednesday:dddd|",
    SCFormatTextFormats: "[cancel]:|[break]:|%loc!Default!:|[custom]:|%loc!Automatic!:general|%loc!Plain Text!:text-plain|"+
-            "HTML:text-html|%loc!Link!:text-link|%loc!Formula!:formula|%loc!Hidden!:hidden|",
+            "HTML:text-html|%loc!Wikitext!:text-wiki|%loc!Link!:text-link|%loc!Formula!:formula|%loc!Hidden!:hidden|",
    SCFormatPadsizes: "[cancel]:|[break]:|%loc!Default!:|[custom]:|%loc!No padding!:0px|"+
             "[newcol]:|1 pixel:1px|2 pixels:2px|3 pixels:3px|4 pixels:4px|5 pixels:5px|"+
             "6 pixels:6px|7 pixels:7px|8 pixels:8px|[newcol]:|9 pixels:9px|10 pixels:10px|11 pixels:11px|"+
@@ -506,10 +521,20 @@ SocialCalc.Constants = {
    s_loc_up: "Up",
    s_loc_value: "Value",
    s_loc_vertical: "Vertical",
+   s_loc_wikitext: "Wikitext",
    s_loc_workspace: "Workspace",
    s_loc_XnewX: "[New]",
    s_loc_XnoneX: "[None]",
    s_loc_Xselect_rangeX: "[select range]",
+
+//
+// SocialCalc Spreadsheet Viewer module, socialcalcviewer.js:
+//
+
+   //*** SocialCalc.SpreadsheetViewer
+
+   SVStatuslineheight: 20, // in pixels
+   SVStatuslineCSS: "font-size:10px;padding:3px 0px;",
 
 //
 // SocialCalc Format Number module, formatnumber2.js:
